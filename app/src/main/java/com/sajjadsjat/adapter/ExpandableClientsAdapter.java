@@ -81,13 +81,6 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
         TextView groupTextView = convertView.findViewById(R.id.short_user);
         Client client = clients.get(groupPosition);
         groupTextView.setText(String.format(Locale.getDefault(), "%s (%s)", client.name, client.para));
-        groupTextView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Toast.makeText(context, "Long Clicked", Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        });
         return convertView;
     }
 
