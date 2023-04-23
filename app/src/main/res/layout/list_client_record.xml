@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/record_brief_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="23-04 CEMENT   560.0TK"
+        android:textAlignment="textEnd"
+        android:textColor="@android:color/black"
+        android:textSize="16sp" />
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+    </TableLayout>
+
+    <TableLayout
+        android:id="@+id/record_detail_table"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/record_detail_quantity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:text="10TRUCTOR" />
+
+            <TextView
+                android:id="@+id/record_detail_item"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:text="CEMENT" />
+
+            <TextView
+                android:id="@+id/record_detail_seller"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:text="Kausar" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:background="#EEEEEE"
+                android:paddingVertical="4dp"
+                android:text="UPrice" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:background="#EEEEEE"
+                android:paddingVertical="4dp"
+                android:text="Discount" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:background="#EEEEEE"
+                android:paddingVertical="4dp"
+                android:text="FPrice" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:id="@+id/record_detail_unit_price"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:text="500Tk" />
+
+            <TextView
+                android:id="@+id/record_detail_discount"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:text="200TK" />
+
+            <TextView
+                android:id="@+id/record_detail_final_price"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:text="800TK" />
+        </TableRow>
+
+    </TableLayout>
+
+
+</LinearLayout>
