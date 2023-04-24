@@ -12,16 +12,16 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_gallery"
+        android:id="@+id/nav_clients"
         android:name="com.sajjadsjat.ui.ClientsFragment"
-        android:label="@string/menu_client_form"
+        android:label="@string/menu_clients"
         tools:layout="@layout/fragment_clients" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.sajjadsjat.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/nav_ovens"
+        android:name="com.sajjadsjat.ui.OvensFragment"
+        android:label="@string/menu_ovens"
+        tools:layout="@layout/fragment_ovens" />
 
     <fragment
         android:id="@+id/nav_record_form"
@@ -37,7 +37,13 @@
 
     <fragment
         android:id="@+id/nav_client_form"
-        android:name="com.sajjadsjat.ui.forms.PaymentFormFragment"
+        android:name="com.sajjadsjat.ui.forms.ClientFormFragment"
         android:label="@string/menu_client_form"
         tools:layout="@layout/fragment_client_form" />
+
+    <fragment
+        android:id="@+id/nav_oven_form"
+        android:name="com.sajjadsjat.ui.forms.OvenFormFragment"
+        android:label="@string/menu_oven_form"
+        tools:layout="@layout/fragment_oven_form" />
 </navigation>
