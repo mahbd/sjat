@@ -12,7 +12,12 @@ import android.widget.ExpandableListView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.sajjadsjat.MainActivity;
+import com.sajjadsjat.R;
 import com.sajjadsjat.adapter.ExpandableClientsAdapter;
 import com.sajjadsjat.databinding.FragmentHomeBinding;
 import com.sajjadsjat.model.Client;
@@ -25,6 +30,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class HomeFragment extends Fragment {
@@ -98,6 +104,16 @@ public class HomeFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable editable) {
             }
+        });
+
+        binding.addRecord.setOnClickListener(view -> {
+            NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.nav_record_form);
+        });
+
+        binding.addPayment.setOnClickListener(view -> {
+            NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.nav_payment_form);
         });
 
         return root;

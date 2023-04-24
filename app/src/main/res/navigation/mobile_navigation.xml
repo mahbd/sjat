@@ -6,12 +6,6 @@
     app:startDestination="@+id/nav_home">
 
     <fragment
-        android:id="@+id/nav_record_form"
-        android:name="com.sajjadsjat.ui.forms.RecordFormFragment"
-        android:label="@string/menu_record_form"
-        tools:layout="@layout/fragment_record_form" />
-
-    <fragment
         android:id="@+id/nav_home"
         android:name="com.sajjadsjat.ui.home.HomeFragment"
         android:label="@string/menu_home"
@@ -28,4 +22,16 @@
         android:name="com.sajjadsjat.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
+
+    <fragment
+        android:id="@+id/nav_record_form"
+        android:name="com.sajjadsjat.ui.forms.RecordFormFragment"
+        android:label="@string/menu_record_form"
+        tools:layout="@layout/fragment_record_form" />
+
+    <fragment
+        android:id="@+id/nav_payment_form"
+        android:name="com.sajjadsjat.ui.forms.PaymentFormFragment"
+        android:label="@string/menu_payment_form"
+        tools:layout="@layout/fragment_payment_form" />
 </navigation>

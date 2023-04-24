@@ -11,4 +11,7 @@
     <string name="menu_gallary">Gallary</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="menu_record_form">Record Form</string>
+    <string name="menu_payment_form">Payment Form</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
