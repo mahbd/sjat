@@ -8,6 +8,7 @@
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Home</string>
-    <string name="menu_clients">Clients</string>
+    <string name="menu_gallary">Gallary</string>
     <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_record_form">Record Form</string>
 </resources>

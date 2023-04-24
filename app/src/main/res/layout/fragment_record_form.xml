@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.forms.RecordFormFragment">
+
+    <TableLayout
+        android:id="@+id/search_area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <AutoCompleteTextView
+            android:id="@+id/record_name_dropdown"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:autofillHints="postalAddress"
+            android:hint="Name"
+            android:inputType="textPostalAddress"
+            android:textColor="@color/black"
+            android:textColorHint="@color/gray" />
+
+        <TableRow>
+
+            <AutoCompleteTextView
+                android:id="@+id/record_item_dropdown"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_weight="1"
+                android:autofillHints="postalAddress"
+                android:hint="Item"
+                android:inputType="textPostalAddress"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray" />
+
+            <AutoCompleteTextView
+                android:id="@+id/record_price_dropdown"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_weight="1"
+                android:autofillHints="postalAddress"
+                android:hint="Price"
+                android:inputType="textPostalAddress"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray" />
+        </TableRow>
+
+        <TableRow>
+
+            <AutoCompleteTextView
+                android:id="@+id/record_quantity_dropdown"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_weight="1"
+                android:autofillHints="postalAddress"
+                android:hint="Quantity"
+                android:inputType="textPostalAddress"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray" />
+
+            <AutoCompleteTextView
+                android:id="@+id/record_unit_dropdown"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_weight="1"
+                android:autofillHints="postalAddress"
+                android:hint="Unit"
+                android:inputType="textPostalAddress"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray" />
+        </TableRow>
+
+        <TextView
+            android:id="@+id/record_discount"
+            android:text="Discount: 100Tk"
+            android:textAlignment="center"
+            android:textSize="25sp" />
+
+        <Button
+            android:id="@+id/record_save"
+            android:text="Save" />
+    </TableLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
