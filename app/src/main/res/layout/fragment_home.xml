@@ -7,50 +7,56 @@
     android:layout_margin="10dp"
     tools:context=".ui.home.HomeFragment">
 
-
-    <LinearLayout
-        android:id="@+id/search_area"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/search_box"
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:autofillHints="name"
-            android:hint="Name"
-            android:inputType="textPersonName"
-            android:textColor="@color/black"
-            android:textColorHint="@color/gray" />
 
-        <AutoCompleteTextView
-            android:id="@+id/para_dropdown"
+        <LinearLayout
+            android:id="@+id/search_area"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:textColor="@color/black"
-            android:textColorHint="@color/gray"
+            android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:autofillHints="postalAddress"
-            android:hint="Para"
-            android:inputType="textPostalAddress" />
+            app:layout_constraintTop_toTopOf="parent">
 
-    </LinearLayout>
+            <EditText
+                android:id="@+id/search_box"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:autofillHints="name"
+                android:hint="Name"
+                android:inputType="textPersonName"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray" />
 
+            <AutoCompleteTextView
+                android:id="@+id/para_dropdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:autofillHints="postalAddress"
+                android:hint="Para"
+                android:inputType="textPostalAddress"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <ExpandableListView
-        android:id="@+id/expandableListView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/search_area" />
+        </LinearLayout>
+
+        <ExpandableListView
+            android:id="@+id/expandableListView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/search_area" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_record"
@@ -59,8 +65,8 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="16dp"
-        app:srcCompat="@android:drawable/ic_input_add"
-        android:contentDescription="Add Record" />
+        android:contentDescription="Add Record"
+        app:srcCompat="@android:drawable/ic_input_add" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_payment"
@@ -69,6 +75,6 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="80dp"
         android:layout_marginBottom="16dp"
-        app:srcCompat="@drawable/baseline_attach_money_24"
-        android:contentDescription="Add Payment" />
+        android:contentDescription="Add Payment"
+        app:srcCompat="@drawable/baseline_attach_money_24" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

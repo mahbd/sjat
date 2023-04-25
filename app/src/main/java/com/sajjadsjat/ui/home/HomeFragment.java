@@ -15,30 +15,27 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.sajjadsjat.MainActivity;
 import com.sajjadsjat.R;
 import com.sajjadsjat.adapter.ExpandableClientsAdapter;
 import com.sajjadsjat.databinding.FragmentHomeBinding;
 import com.sajjadsjat.model.Client;
-import com.sajjadsjat.model.UserData;
 import com.sajjadsjat.model.ClientRecord;
+import com.sajjadsjat.model.UserData;
 import com.sajjadsjat.model.UserRecordData;
+import com.sajjadsjat.utils.SimpleSearchableDropdown;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -88,23 +85,10 @@ public class HomeFragment extends Fragment {
             paras.add(client.para);
         }
 
-
-        AutoCompleteTextView dropdownList = new ParaDropdown(this.getContext(), paraDropdown, android.R.layout.simple_list_item_1)
-                .showParaDropdown(paras.toArray(new String[0]));
-        dropdownList.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                adapter.filterByPara(charSequence.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
-        });
+        new SimpleSearchableDropdown(this.getContext(), paraDropdown, android.R.layout.simple_list_item_1, (s) -> {
+            adapter.filterByPara(s.toString());
+            return null;
+        }).showDropdown(paras.toArray(new String[0]));
 
         binding.addRecord.setOnClickListener(view -> {
             NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
