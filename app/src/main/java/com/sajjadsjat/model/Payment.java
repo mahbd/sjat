@@ -9,26 +9,60 @@ import io.realm.annotations.PrimaryKey;
 
 public class Payment extends RealmObject {
     @PrimaryKey
-    public long id;
-    public long createdAt;
-    public double amount;
-    public double discount;
-    public PayMethod payMethod;
-    public Client client;
+    private long id;
+    private long createdAt;
+    private double amount;
+    private double discount;
+    private PayMethod payMethod;
+    private Client client;
 
-    void print() {
-        System.out.println("Payment: " + id + " " + createdAt + " " + amount + " " + discount + " " + payMethod.name);
+    public long getId() {
+        return id;
     }
 
-    void delete() {
-        this.deleteFromRealm();
+    public long getCreatedAt() {
+        return createdAt;
     }
 
-    void save() {
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        realm.copyToRealmOrUpdate(this);
-        realm.commitTransaction();
+    public void setCreatedAt(long createdAt) {
+        this.createdAt = createdAt;
+        this.save();
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+        this.save();
+    }
+
+    public double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(double discount) {
+        this.discount = discount;
+        this.save();
+    }
+
+    public PayMethod getPayMethod() {
+        return payMethod;
+    }
+
+    public void setPayMethod(PayMethod payMethod) {
+        this.payMethod = payMethod;
+        this.save();
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+        this.save();
     }
 
     public Payment() {
@@ -43,6 +77,22 @@ public class Payment extends RealmObject {
         this.discount = discount;
         this.payMethod = payMethod;
         this.save();
+    }
+
+    private void save() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(this);
+        realm.commitTransaction();
+    }
+
+    public static Payment get(long id) {
+        Realm realm = Realm.getDefaultInstance();
+        return realm.where(Payment.class).equalTo("id", id).findFirst();
+    }
+
+    void delete() {
+        this.deleteFromRealm();
     }
 
 }

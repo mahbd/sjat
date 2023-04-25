@@ -42,7 +42,7 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
     @Override
     public int getChildrenCount(int groupPosition) {
         Client group = clients.get(groupPosition);
-        return Objects.requireNonNull(userRecords.get(group.id)).size();
+        return Objects.requireNonNull(userRecords.get(group.getId())).size();
     }
 
     @Override
@@ -53,7 +53,7 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
     @Override
     public Object getChild(int groupPosition, int childPosition) {
         Client group = clients.get(groupPosition);
-        return Objects.requireNonNull(userRecords.get(group.id)).get(childPosition);
+        return Objects.requireNonNull(userRecords.get(group.getId())).get(childPosition);
     }
 
     @Override
@@ -79,7 +79,7 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
         }
         TextView groupTextView = convertView.findViewById(R.id.short_user);
         Client client = clients.get(groupPosition);
-        groupTextView.setText(String.format(Locale.getDefault(), "%s (%s)", client.name, client.para));
+        groupTextView.setText(String.format(Locale.getDefault(), "%s (%s)", client.getName(), client.getPara()));
         return convertView;
     }
 
@@ -91,26 +91,26 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
         }
         TextView childTextView = convertView.findViewById(R.id.record_brief_text);
         Client client = clients.get(groupPosition);
-        ClientRecord clientRecord = Objects.requireNonNull(userRecords.get(client.id)).get(childPosition);
+        ClientRecord clientRecord = Objects.requireNonNull(userRecords.get(client.getId())).get(childPosition);
         if (clientRecord.record != null) {
             Record record = clientRecord.record;
             String dateTime = record.getDateTime();
-            String item = record.item.toString();
-            double price = record.unitPrice * record.quantity - record.discount;
+            String item = record.getItem();
+            double price = record.getUnitPrice() * record.getQuantity() - record.getDiscount();
 
             childTextView.setText(String.format(Locale.getDefault(), "%s  %s    %.0fTk", dateTime, item, price));
             TextView recordDetailQuantity = convertView.findViewById(R.id.record_detail_quantity);
-            recordDetailQuantity.setText(String.format(Locale.getDefault(), "%.2f %s", record.quantity, record.unit.toString()));
+            recordDetailQuantity.setText(String.format(Locale.getDefault(), "%.2f %s", record.getQuantity(), record.getUnit()));
             TextView recordDetailItem = convertView.findViewById(R.id.record_detail_item);
-            recordDetailItem.setText(record.item.toString());
+            recordDetailItem.setText(record.getItem());
             TextView recordDetailSeller = convertView.findViewById(R.id.record_detail_seller);
-            recordDetailSeller.setText(record.seller);
+            recordDetailSeller.setText(record.getSeller());
             TextView recordDetailUnitPrice = convertView.findViewById(R.id.record_detail_unit_price);
-            recordDetailUnitPrice.setText(String.format(Locale.getDefault(), "%.2f Tk", record.unitPrice));
+            recordDetailUnitPrice.setText(String.format(Locale.getDefault(), "%.2f Tk", record.getUnitPrice()));
             TextView recordDetailDiscount = convertView.findViewById(R.id.record_detail_discount);
-            recordDetailDiscount.setText(String.format(Locale.getDefault(), "%.2f Tk", record.discount));
+            recordDetailDiscount.setText(String.format(Locale.getDefault(), "%.2f Tk", record.getDiscount()));
             TextView recordDetailFinalPrice = convertView.findViewById(R.id.record_detail_final_price);
-            recordDetailFinalPrice.setText(String.format(Locale.getDefault(), "%.2f Tk", record.unitPrice * record.quantity - record.discount));
+            recordDetailFinalPrice.setText(String.format(Locale.getDefault(), "%.2f Tk", record.getUnitPrice() * record.getQuantity() - record.getDiscount()));
 
             View finalConvertView = convertView;
             convertView.setOnClickListener(new View.OnClickListener() {
@@ -147,8 +147,8 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
 
     private void applyFilters() {
         Object[] filtered = originalClients.stream()
-                .filter(client -> client.name.toLowerCase().contains(nameFilter.toLowerCase()))
-                .filter(client -> client.para.toLowerCase().contains(paraFilter.toLowerCase()))
+                .filter(client -> client.getName().toLowerCase().contains(nameFilter.toLowerCase()))
+                .filter(client -> client.getPara().toLowerCase().contains(paraFilter.toLowerCase()))
                 .toArray();
         clients = Arrays.asList(Arrays.copyOf(filtered, filtered.length, Client[].class));
         this.notifyDataSetChanged();

@@ -8,9 +8,13 @@ import io.realm.annotations.PrimaryKey;
 
 public class Unit extends RealmObject {
     @PrimaryKey
-    public String name;
+    private String name;
     @LinkingObjects("unit")
     public final RealmResults<Record> records;
+
+    public String getName() {
+        return name;
+    }
 
     public Unit() {
         this.records = null;
@@ -23,7 +27,7 @@ public class Unit extends RealmObject {
         realm.commitTransaction();
     }
 
-    static Unit get(String name) {
+    public static Unit get(String name) {
         Realm realm = Realm.getDefaultInstance();
         RealmResults<Unit> units = realm.where(Unit.class).equalTo("name", name).findAll();
         if (units.size() > 0) {

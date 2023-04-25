@@ -20,12 +20,12 @@ import com.sajjadsjat.adapter.ExpandableClientsAdapter;
 import com.sajjadsjat.databinding.FragmentHomeBinding;
 import com.sajjadsjat.model.Client;
 import com.sajjadsjat.model.ClientRecord;
-import com.sajjadsjat.model.UserData;
-import com.sajjadsjat.model.UserRecordData;
+import com.sajjadsjat.model.Item;
+import com.sajjadsjat.model.Record;
+import com.sajjadsjat.model.Unit;
 import com.sajjadsjat.utils.SimpleSearchableDropdown;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -44,21 +44,21 @@ public class HomeFragment extends Fragment {
         AutoCompleteTextView paraDropdown = binding.paraDropdown;
 
         ExpandableListView expandableListView = binding.expandableListView;
-        List<Client> clients = Arrays.asList(UserData.clients);
+        List<Client> clients = Client.get(new HashMap<>());
 
         HashMap<Long, List<ClientRecord>> childItems = new HashMap<>();
-        List<ClientRecord> group1Items = new ArrayList<>();
-        group1Items.add(UserRecordData.instance1);
-        group1Items.add(UserRecordData.instance2);
-        childItems.put(clients.get(0).id, group1Items);
-        List<ClientRecord> group2Items = new ArrayList<>();
-        group2Items.add(UserRecordData.instance3);
-        group2Items.add(UserRecordData.instance4);
-        childItems.put(clients.get(1).id, group2Items);
-        List<ClientRecord> group3Items = new ArrayList<>();
-        group3Items.add(UserRecordData.instance5);
-        group3Items.add(UserRecordData.instance6);
-        childItems.put(clients.get(2).id, group3Items);
+        for (Client client : clients) {
+            List<ClientRecord> clientRecords = new ArrayList<>();
+            if (client.records != null) {
+                for (Record record : client.records) {
+                    if (record.getId() == client.getId()) {
+                        clientRecords.add(new ClientRecord(record));
+                    }
+                }
+            }
+            childItems.put(client.getId(), clientRecords);
+        }
+
 
         ExpandableClientsAdapter adapter = new ExpandableClientsAdapter(this.getContext(), clients, childItems);
 
@@ -82,7 +82,7 @@ public class HomeFragment extends Fragment {
         Set<String> paras = new HashSet<>();
         paras.add("");
         for (Client client : clients) {
-            paras.add(client.para);
+            paras.add(client.getPara());
         }
 
         new SimpleSearchableDropdown(this.getContext(), paraDropdown, (s) -> {
@@ -101,6 +101,22 @@ public class HomeFragment extends Fragment {
         });
 
         return root;
+    }
+
+    Item getOrCreateItem(String name) {
+        Item item = Item.get(name);
+        if (item == null) {
+            item = new Item(name);
+        }
+        return item;
+    }
+
+    Unit getOrCreateUnit(String name) {
+        Unit unit = Unit.get(name);
+        if (unit == null) {
+            unit = new Unit(name);
+        }
+        return unit;
     }
 
     @Override
