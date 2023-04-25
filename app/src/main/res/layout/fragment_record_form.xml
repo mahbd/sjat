@@ -20,9 +20,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
-            android:autofillHints="postalAddress"
+            android:autofillHints="name"
             android:hint="Name"
-            android:inputType="textPostalAddress"
+            android:inputType="textPersonName"
             android:textColor="@color/black"
             android:textColorHint="@color/gray" />
 
@@ -35,38 +35,35 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:autofillHints="postalAddress"
                 android:hint="Item"
-                android:inputType="textPostalAddress"
+                android:inputType="text"
                 android:textColor="@color/black"
                 android:textColorHint="@color/gray" />
 
-            <AutoCompleteTextView
-                android:id="@+id/record_price_dropdown"
+            <EditText
+                android:id="@+id/record_price"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:autofillHints="postalAddress"
                 android:hint="Price"
-                android:inputType="textPostalAddress"
+                android:inputType="numberDecimal"
                 android:textColor="@color/black"
                 android:textColorHint="@color/gray" />
         </TableRow>
 
         <TableRow>
 
-            <AutoCompleteTextView
-                android:id="@+id/record_quantity_dropdown"
+            <EditText
+                android:id="@+id/record_quantity"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:autofillHints="postalAddress"
                 android:hint="Quantity"
-                android:inputType="textPostalAddress"
+                android:inputType="numberDecimal"
                 android:textColor="@color/black"
                 android:textColorHint="@color/gray" />
 
@@ -77,9 +74,8 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:autofillHints="postalAddress"
                 android:hint="Unit"
-                android:inputType="textPostalAddress"
+                android:inputType="text"
                 android:textColor="@color/black"
                 android:textColorHint="@color/gray" />
         </TableRow>
@@ -87,6 +83,7 @@
         <TextView
             android:id="@+id/record_discount"
             android:text="Discount: 100Tk"
+            android:textColor="@color/dark_green"
             android:textAlignment="center"
             android:textSize="25sp" />
 

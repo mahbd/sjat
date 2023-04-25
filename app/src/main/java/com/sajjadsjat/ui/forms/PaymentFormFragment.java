@@ -38,17 +38,16 @@ public class PaymentFormFragment extends Fragment {
                 binding.paymentNameDropdown.setError("Name is required");
                 return;
             }
+            binding.paymentNameDropdown.setError(null);
             if (amount == 0) {
                 binding.paymentAmount.setError("Amount is required");
                 return;
             }
+            binding.paymentAmount.setError(null);
             if (receiver.isEmpty() || Arrays.stream(names).noneMatch(receiver::equals)) {
                 binding.paymentReceiverDropdown.setError("Receiver is required");
                 return;
             }
-            // clear all errors
-            binding.paymentNameDropdown.setError(null);
-            binding.paymentAmount.setError(null);
             binding.paymentReceiverDropdown.setError(null);
             Toast.makeText(requireContext(), "Payment Saved", Toast.LENGTH_SHORT).show();
         });
