@@ -15,6 +15,7 @@ import com.sajjadsjat.utils.H;
 import com.sajjadsjat.utils.SimpleSearchableDropdown;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class RecordFormFragment extends Fragment {
 
@@ -25,9 +26,9 @@ public class RecordFormFragment extends Fragment {
 
         binding = FragmentRecordFormBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        String[] names = {"Ruhul Amin", "Sumon Hossain", "Rober Newbold"};
-        String[] items = {"Item 1", "Item 2", "Item 3"};
-        String[] units = {"Unit 1", "Unit 2", "Unit 3"};
+        List<String> names = Arrays.asList("Ruhul Amin", "Sumon Hossain", "Rober Newbold");
+        List<String> items = Arrays.asList("Item 1", "Item 2", "Item 3");
+        List<String> units = Arrays.asList("Unit 1", "Unit 2", "Unit 3");
         new SimpleSearchableDropdown(requireContext(), binding.recordNameDropdown, (s) -> s).showDropdown(names);
         new SimpleSearchableDropdown(requireContext(), binding.recordItemDropdown, (s) -> s).showDropdown(items);
         new SimpleSearchableDropdown(requireContext(), binding.recordUnitDropdown, (s) -> s).showDropdown(units);
@@ -39,17 +40,17 @@ public class RecordFormFragment extends Fragment {
             double quantity = H.stringToDouble(binding.recordQuantity.getText().toString());
             double price = H.stringToDouble(binding.recordPrice.getText().toString());
 
-            if (name.isEmpty() || Arrays.stream(names).noneMatch(name::equals)) {
+            if (name.isEmpty() || names.stream().noneMatch(name::equals)) {
                 binding.recordNameDropdown.setError("Name is required");
                 return;
             }
             binding.recordNameDropdown.setError(null);
-            if (item.isEmpty() || Arrays.stream(items).noneMatch(item::equals)) {
+            if (item.isEmpty() || names.stream().noneMatch(item::equals)) {
                 binding.recordItemDropdown.setError("Item is required");
                 return;
             }
             binding.recordItemDropdown.setError(null);
-            if (unit.isEmpty() || Arrays.stream(units).noneMatch(unit::equals)) {
+            if (unit.isEmpty() || names.stream().noneMatch(unit::equals)) {
                 binding.recordUnitDropdown.setError("Unit is required");
                 return;
             }

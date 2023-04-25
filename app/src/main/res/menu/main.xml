@@ -2,6 +2,32 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/action_address"
+        android:orderInCategory="100"
+        android:title="@string/action_address"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_employees"
+        android:orderInCategory="100"
+        android:title="@string/action_employees"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_items"
+        android:orderInCategory="100"
+        android:title="@string/action_items"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_pay_methods"
+        android:orderInCategory="100"
+        android:title="@string/action_pay_methods"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_units"
+        android:orderInCategory="100"
+        android:title="@string/action_units"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         android:title="@string/action_settings"

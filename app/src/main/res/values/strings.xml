@@ -6,6 +6,11 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string name="action_address">Address</string>
+    <string name="action_employees">Employess</string>
+    <string name="action_items">Items</string>
+    <string name="action_pay_methods">Pay Methods</string>
+    <string name="action_units">Units</string>
 
     <string name="menu_home">Home</string>
     <string name="menu_clients">Clients</string>

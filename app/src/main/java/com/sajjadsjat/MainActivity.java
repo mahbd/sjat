@@ -2,10 +2,13 @@ package com.sajjadsjat;
 
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.sajjadsjat.databinding.ActivityMainBinding;
 
+import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -50,5 +53,24 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        if (item.getItemId() == R.id.action_settings) {
+            Toast.makeText(this, "Setting clicked", Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId() == R.id.action_address) {
+            navController.navigate(R.id.nav_address);
+        } else if (item.getItemId() == R.id.action_employees) {
+            navController.navigate(R.id.nav_employees);
+        } else if (item.getItemId() == R.id.action_items) {
+            navController.navigate(R.id.nav_items);
+        } else if (item.getItemId() == R.id.action_pay_methods) {
+            navController.navigate(R.id.nav_pay_methods);
+        } else if (item.getItemId() == R.id.action_units) {
+            navController.navigate(R.id.nav_units);
+        }
+        return true;
     }
 }

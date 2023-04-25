@@ -10,6 +10,7 @@ import android.widget.AutoCompleteTextView;
 import com.sajjadsjat.adapter.CustomArrayAdapter;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 
 public class SimpleSearchableDropdown {
@@ -59,8 +60,8 @@ public class SimpleSearchableDropdown {
         });
     }
 
-    public void showDropdown(String[] optionList) {
-        adapter = new CustomArrayAdapter(context, layout, Arrays.asList(optionList));
+    public void showDropdown(List<String> optionList) {
+        adapter = new CustomArrayAdapter(context, layout, optionList);
         dropdownList.setAdapter(adapter);
     }
 }

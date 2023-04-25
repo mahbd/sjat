@@ -6,76 +6,44 @@ import java.time.ZoneOffset;
 import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 public class Payment extends RealmObject {
     @PrimaryKey
     private long id;
-    private long createdAt;
     private double amount;
+    private Client client;
+    private long createdAt;
     private double discount;
     private PayMethod payMethod;
-    private Client client;
+    private Employee receiver;
 
     public long getId() {
         return id;
     }
 
-    public long getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(long createdAt) {
-        this.createdAt = createdAt;
-        this.save();
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-        this.save();
-    }
-
-    public double getDiscount() {
-        return discount;
-    }
-
-    public void setDiscount(double discount) {
-        this.discount = discount;
-        this.save();
-    }
-
-    public PayMethod getPayMethod() {
-        return payMethod;
-    }
-
-    public void setPayMethod(PayMethod payMethod) {
-        this.payMethod = payMethod;
-        this.save();
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-        this.save();
-    }
-
     public Payment() {
     }
 
-    public Payment(LocalDateTime createdAt, double amount, double discount, PayMethod payMethod) {
+    public Payment(double amount, Client client, LocalDateTime createdAt, double discount, PayMethod payMethod, Employee receiver) {
         Realm realm = Realm.getDefaultInstance();
         Number maxId = realm.where(Payment.class).max("id");
         this.id = maxId == null ? 1 : maxId.longValue() + 1;
-        this.createdAt = createdAt.toInstant(ZoneOffset.UTC).toEpochMilli();
         this.amount = amount;
+        this.createdAt = createdAt.toInstant(ZoneOffset.UTC).toEpochMilli();
+        if (client == null) {
+            throw new IllegalArgumentException("Client cannot be null");
+        }
+        this.client = client;
         this.discount = discount;
+        if (payMethod == null) {
+            throw new IllegalArgumentException("PayMethod cannot be null");
+        }
         this.payMethod = payMethod;
+        if (receiver == null) {
+            throw new IllegalArgumentException("Receiver cannot be null");
+        }
+        this.receiver = receiver;
         this.save();
     }
 
@@ -91,8 +59,14 @@ public class Payment extends RealmObject {
         return realm.where(Payment.class).equalTo("id", id).findFirst();
     }
 
-    void delete() {
-        this.deleteFromRealm();
+    public static void delete(long id) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        Payment payment = realm.where(Payment.class).equalTo("id", id).findFirst();
+        if (payment != null) {
+            payment.deleteFromRealm();
+        }
+        realm.commitTransaction();
     }
 
 }

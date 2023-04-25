@@ -91,6 +91,9 @@ public class Client extends RealmObject {
 
     @Nullable
     public String getExtraIdentifier() {
+        if (extraIdentifier == null) {
+            return "";
+        }
         return extraIdentifier;
     }
 

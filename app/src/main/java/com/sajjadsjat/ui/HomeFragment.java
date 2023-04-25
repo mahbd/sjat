@@ -26,6 +26,7 @@ import com.sajjadsjat.model.Unit;
 import com.sajjadsjat.utils.SimpleSearchableDropdown;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -88,7 +89,7 @@ public class HomeFragment extends Fragment {
         new SimpleSearchableDropdown(this.getContext(), paraDropdown, (s) -> {
             adapter.filterByPara(s.toString());
             return null;
-        }).showDropdown(paras.toArray(new String[0]));
+        }).showDropdown(Arrays.asList(paras.toArray(new String[0])));
 
         binding.addRecord.setOnClickListener(view -> {
             NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);

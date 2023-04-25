@@ -12,6 +12,9 @@ import androidx.fragment.app.Fragment;
 import com.sajjadsjat.databinding.FragmentClientFormBinding;
 import com.sajjadsjat.utils.SimpleSearchableDropdown;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class ClientFormFragment extends Fragment {
     private FragmentClientFormBinding binding;
 
@@ -20,7 +23,7 @@ public class ClientFormFragment extends Fragment {
 
         binding = FragmentClientFormBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        String[] paras = {"Abdullahpur", "Bhurungamari", "Chilmari", "Kurigram Sadar", "Nageshwari", "Phulbari", "Rajarhat", "Raomari", "Rowmari", "Ulipur"};
+        List<String> paras = Arrays.asList("Abdullahpur", "Bhurungamari", "Chilmari", "Kurigram Sadar", "Nageshwari", "Phulbari", "Rajarhat", "Raomari", "Rowmari", "Ulipur");
         new SimpleSearchableDropdown(requireContext(), binding.clientParaDropdown, (s) -> s).showDropdown(paras);
         new SimpleSearchableDropdown(requireContext(), binding.clientVillageDropdown, (s) -> s).showDropdown(paras);
         new SimpleSearchableDropdown(requireContext(), binding.clientUnionDropdown, (s) -> s).showDropdown(paras);

@@ -46,4 +46,34 @@
         android:name="com.sajjadsjat.ui.forms.OvenFormFragment"
         android:label="@string/menu_oven_form"
         tools:layout="@layout/fragment_oven_form" />
+
+    <fragment
+        android:id="@+id/nav_address"
+        android:name="com.sajjadsjat.ui.AddressFragment"
+        android:label="@string/action_address"
+        tools:layout="@layout/fragment_employees" />
+
+    <fragment
+        android:id="@+id/nav_employees"
+        android:name="com.sajjadsjat.ui.EmployeesFragment"
+        android:label="@string/action_employees"
+        tools:layout="@layout/fragment_employees" />
+
+    <fragment
+        android:id="@+id/nav_items"
+        android:name="com.sajjadsjat.ui.ItemsFragment"
+        android:label="@string/action_items"
+        tools:layout="@layout/fragment_employees" />
+
+    <fragment
+        android:id="@+id/nav_pay_methods"
+        android:name="com.sajjadsjat.ui.PayMethodsFragment"
+        android:label="@string/action_pay_methods"
+        tools:layout="@layout/fragment_employees" />
+
+    <fragment
+        android:id="@+id/nav_units"
+        android:name="com.sajjadsjat.ui.UnitsFragment"
+        android:label="@string/action_units"
+        tools:layout="@layout/fragment_employees" />
 </navigation>
