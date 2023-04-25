@@ -28,35 +28,43 @@
 
         <TableRow>
 
-            <AutoCompleteTextView
-                android:id="@+id/record_item_dropdown"
+            <EditText
+                android:id="@+id/payment_amount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:autofillHints="postalAddress"
                 android:hint="Amount"
-                android:inputType="textPostalAddress"
+                android:inputType="number"
                 android:textColor="@color/black"
                 android:textColorHint="@color/gray" />
 
             <AutoCompleteTextView
-                android:id="@+id/record_price_dropdown"
+                android:id="@+id/payment_receiver_dropdown"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:autofillHints="postalAddress"
                 android:hint="Receiver"
-                android:inputType="textPostalAddress"
+                android:autofillHints="name"
+                android:inputType="textPersonName"
                 android:textColor="@color/black"
                 android:textColorHint="@color/gray" />
         </TableRow>
 
-        <Button
-            android:id="@+id/payment_save"
-            android:text="Save" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/payment_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Save" />
+        </LinearLayout>
     </TableLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,10 +19,10 @@ public class SimpleSearchableDropdown {
     AutoCompleteTextView dropdownList;
 
     // get on change listener
-    public SimpleSearchableDropdown(Context context, AutoCompleteTextView dropdownList, int layout, Function onChange) {
+    public SimpleSearchableDropdown(Context context, AutoCompleteTextView dropdownList, Function onChange) {
         this.context = context;
         this.dropdownList = dropdownList;
-        this.layout = layout;
+        this.layout = android.R.layout.simple_list_item_1;
 
         dropdownList.setOnItemClickListener((parent, view, position, id) -> {
         });

@@ -1,4 +1,4 @@
-package com.sajjadsjat.ui.home;
+package com.sajjadsjat.ui;
 
 import android.os.Bundle;
 import android.text.Editable;
@@ -85,7 +85,7 @@ public class HomeFragment extends Fragment {
             paras.add(client.para);
         }
 
-        new SimpleSearchableDropdown(this.getContext(), paraDropdown, android.R.layout.simple_list_item_1, (s) -> {
+        new SimpleSearchableDropdown(this.getContext(), paraDropdown, (s) -> {
             adapter.filterByPara(s.toString());
             return null;
         }).showDropdown(paras.toArray(new String[0]));
