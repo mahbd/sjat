@@ -83,12 +83,21 @@
         <TextView
             android:id="@+id/record_discount"
             android:text="Discount: 100Tk"
-            android:textColor="@color/dark_green"
             android:textAlignment="center"
+            android:textColor="@color/dark_green"
             android:textSize="25sp" />
 
-        <Button
-            android:id="@+id/record_save"
-            android:text="Save" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <Button
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/record_save"
+                android:text="Save" />
+        </LinearLayout>
     </TableLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

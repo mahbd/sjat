@@ -14,49 +14,111 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <AutoCompleteTextView
-            android:id="@+id/record_name_dropdown"
+        <EditText
+            android:id="@+id/client_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
-            android:autofillHints="postalAddress"
+            android:autofillHints="name"
             android:hint="Name"
-            android:inputType="textPostalAddress"
+            android:inputType="textPersonName"
+            android:textColor="@color/black"
+            android:textColorHint="@color/gray" />
+
+        <EditText
+            android:id="@+id/client_fathers_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:autofillHints="name"
+            android:hint="Father's Name"
+            android:inputType="textPersonName"
+            android:textColor="@color/black"
+            android:textColorHint="@color/gray" />
+
+        <EditText
+            android:id="@+id/client_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:autofillHints="phone"
+            android:hint="Phone number"
+            android:inputType="phone"
             android:textColor="@color/black"
             android:textColorHint="@color/gray" />
 
         <TableRow>
 
             <AutoCompleteTextView
-                android:id="@+id/record_item_dropdown"
+                android:id="@+id/client_para_dropdown"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
                 android:autofillHints="postalAddress"
-                android:hint="Amount"
+                android:hint="Para"
                 android:inputType="textPostalAddress"
                 android:textColor="@color/black"
                 android:textColorHint="@color/gray" />
 
             <AutoCompleteTextView
-                android:id="@+id/record_price_dropdown"
+                android:id="@+id/client_village_dropdown"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
                 android:autofillHints="postalAddress"
-                android:hint="Receiver"
+                android:hint="Village"
                 android:inputType="textPostalAddress"
                 android:textColor="@color/black"
                 android:textColorHint="@color/gray" />
         </TableRow>
 
-        <Button
-            android:id="@+id/payment_save"
-            android:text="Save" />
+        <TableRow>
+
+            <AutoCompleteTextView
+                android:id="@+id/client_union_dropdown"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_weight="1"
+                android:autofillHints="postalAddress"
+                android:hint="Union"
+                android:inputType="textPostalAddress"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray" />
+
+            <EditText
+                android:id="@+id/client_extra"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_weight="1"
+                android:autofillHints="name"
+                android:hint="Extra"
+                android:inputType="text"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray" />
+        </TableRow>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/client_save"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="Save" />
+        </LinearLayout>
     </TableLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
