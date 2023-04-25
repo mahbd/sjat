@@ -46,7 +46,7 @@ public class HomeFragment extends Fragment {
         ExpandableListView expandableListView = binding.expandableListView;
         List<Client> clients = Arrays.asList(UserData.clients);
 
-        HashMap<Integer, List<ClientRecord>> childItems = new HashMap<>();
+        HashMap<Long, List<ClientRecord>> childItems = new HashMap<>();
         List<ClientRecord> group1Items = new ArrayList<>();
         group1Items.add(UserRecordData.instance1);
         group1Items.add(UserRecordData.instance2);

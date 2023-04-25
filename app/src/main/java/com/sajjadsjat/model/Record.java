@@ -1,25 +1,27 @@
 package com.sajjadsjat.model;
 
-import com.sajjadsjat.enums.Goods;
-import com.sajjadsjat.enums.Units;
-
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
-public class Record {
-    public LocalDateTime creationDateTime;
-    public Goods item;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
+public class Record extends RealmObject {
+    @PrimaryKey
+    public long id;
+    public long createdAt;
+    public Item item;
     public double quantity;
-    public Units unit;
+    public Unit unit;
     public double unitPrice;
     public double discount;
     public String seller;
+    public Client client;
 
-    public Record() {
-        this.creationDateTime = LocalDateTime.now();
-    }
+    public Record() {}
 
-    public Record(Goods item, double quantity, Units unit, double unitPrice, double discount, String seller) {
-        this.creationDateTime = LocalDateTime.now();
+    public Record(LocalDateTime createdAt, Item item, double quantity, Unit unit, double unitPrice, double discount, String seller) {
+        this.createdAt = createdAt.toInstant(ZoneOffset.UTC).toEpochMilli();
         this.item = item;
         this.quantity = quantity;
         this.unit = unit;
@@ -29,12 +31,6 @@ public class Record {
     }
 
     public String getDateTime() {
-        // show DD-MM-YY HH
-        String hour = creationDateTime.getHour() < 10 ? "0" + creationDateTime.getHour() : String.valueOf(creationDateTime.getHour());
-        String year = creationDateTime.getYear() < 10 ? "0" + creationDateTime.getYear() : String.valueOf(creationDateTime.getYear());
-        year = year.substring(2);
-        String month = creationDateTime.getMonthValue() < 10 ? "0" + creationDateTime.getMonthValue() : String.valueOf(creationDateTime.getMonthValue());
-        String day = creationDateTime.getDayOfMonth() < 10 ? "0" + creationDateTime.getDayOfMonth() : String.valueOf(creationDateTime.getDayOfMonth());
-        return day + "-" + month;
+        return "Incomplete";
     }
 }

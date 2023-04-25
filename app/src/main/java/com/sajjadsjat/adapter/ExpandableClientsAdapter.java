@@ -7,11 +7,10 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.sajjadsjat.R;
 import com.sajjadsjat.model.Client;
 import com.sajjadsjat.model.ClientRecord;
-import com.sajjadsjat.R;
 import com.sajjadsjat.model.Record;
 
 import java.util.Arrays;
@@ -26,9 +25,9 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
     private final Context context;
     private List<Client> clients;
     private final List<Client> originalClients;
-    private final HashMap<Integer, List<ClientRecord>> userRecords;
+    private final HashMap<Long, List<ClientRecord>> userRecords;
 
-    public ExpandableClientsAdapter(Context context, List<Client> clients, HashMap<Integer, List<ClientRecord>> userRecords) {
+    public ExpandableClientsAdapter(Context context, List<Client> clients, HashMap<Long, List<ClientRecord>> userRecords) {
         this.context = context;
         this.clients = clients;
         this.originalClients = clients;
