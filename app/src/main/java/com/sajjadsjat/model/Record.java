@@ -6,78 +6,85 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
-import io.realm.RealmResults;
 import io.realm.annotations.PrimaryKey;
 
 public class Record extends RealmObject {
     @PrimaryKey
     private long id;
-    private long createdAt;
-    private Item item;
-    private double quantity;
-    private Unit unit;
-    private double unitPrice;
-    private double discount;
-    private String seller;
     private Client client;
+    private long createdAt;
+    private double discount;
+    private String item;
+    private double quantity;
+    private String seller;
+    private String unit;
+    private double unitPrice;
 
     public long getId() {
         return id;
-    }
-
-    public String getItem() {
-        return item.getName();
-    }
-
-    public void setItem(Item item) {
-        this.item = item;
-        this.save();
-    }
-
-    public double getQuantity() {
-        return quantity;
-    }
-
-    public String getUnit() {
-        return unit.getName();
-    }
-
-    public double getUnitPrice() {
-        return unitPrice;
     }
 
     public double getDiscount() {
         return discount;
     }
 
+    public String getItem() {
+        return item;
+    }
+    public double getQuantity() {
+        return quantity;
+    }
+
     public String getSeller() {
         return seller;
     }
 
-    public Record() {}
+    public String getUnit() {
+        return unit;
+    }
 
-    public Record(LocalDateTime createdAt, Item item, double quantity, Unit unit, double unitPrice, double discount, String seller) {
-        this.createdAt = createdAt.toInstant(ZoneOffset.UTC).toEpochMilli();
-        if (item == null) {
+    public double getUnitPrice() {
+        return unitPrice;
+    }
+
+    public Record() {
+    }
+
+    public Record(Client client, long createdAt, double discount, String item, double quantity, String seller, String unit, double unitPrice) {
+        this.createdAt = createdAt;
+        if (item == null || item.isEmpty()) {
             throw new IllegalArgumentException("Item cannot be null");
         }
         this.item = item;
         this.quantity = quantity;
+        if (unit == null || unit.isEmpty()) {
+            throw new IllegalArgumentException("Unit cannot be null");
+        }
         this.unit = unit;
         this.unitPrice = unitPrice;
         this.discount = discount;
+        if (seller == null || seller.isEmpty()) {
+            throw new IllegalArgumentException("Seller cannot be null");
+        }
         this.seller = seller;
+
+        Realm.getDefaultInstance().executeTransaction(realm -> {
+            Number maxId = realm.where(Record.class).max("id");
+            this.id = maxId == null ? 1 : maxId.longValue() + 1;
+        });
     }
 
     public String getDateTime() {
-        return "Incomplete";
-    }
-
-    private void save() {
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        realm.copyToRealmOrUpdate(this);
-        realm.commitTransaction();
+        LocalDateTime dateTime = LocalDateTime.ofEpochSecond(this.createdAt / 1000, 0, ZoneOffset.UTC);
+        String month = dateTime.getMonthValue() < 10 ? "0" + dateTime.getMonthValue() : "" + dateTime.getMonthValue();
+        String day = dateTime.getDayOfMonth() < 10 ? "0" + dateTime.getDayOfMonth() : "" + dateTime.getDayOfMonth();
+        int full_hour = dateTime.getHour();
+        if (full_hour > 12) {
+            full_hour -= 12;
+        }
+        String hour = full_hour < 10 ? "0" + full_hour : "" + full_hour;
+        String minute = dateTime.getMinute() < 10 ? "0" + dateTime.getMinute() : "" + dateTime.getMinute();
+        return month + "-" + day + " " + hour + ":" + minute + " " + (dateTime.getHour() < 12 ? "am" : "pm");
     }
 
     public static Record get(long id) {

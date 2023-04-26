@@ -14,8 +14,8 @@ public class Payment extends RealmObject {
     private Client client;
     private long createdAt;
     private boolean isDiscount;
-    private PayMethod payMethod;
-    private Employee receiver;
+    private String payMethod;
+    private String receiver;
 
     public long getId() {
         return id;
@@ -24,7 +24,7 @@ public class Payment extends RealmObject {
     public Payment() {
     }
 
-    public Payment(double amount, Client client, LocalDateTime createdAt, boolean isDiscount, PayMethod payMethod, Employee receiver) {
+    public Payment(double amount, Client client, LocalDateTime createdAt, boolean isDiscount, String payMethod, String receiver) {
         Realm realm = Realm.getDefaultInstance();
         Number maxId = realm.where(Payment.class).max("id");
         this.id = maxId == null ? 1 : maxId.longValue() + 1;
@@ -35,11 +35,11 @@ public class Payment extends RealmObject {
         }
         this.client = client;
         this.isDiscount = isDiscount;
-        if (payMethod == null) {
+        if (payMethod == null || payMethod.isEmpty()) {
             throw new IllegalArgumentException("PayMethod cannot be null");
         }
         this.payMethod = payMethod;
-        if (receiver == null) {
+        if (receiver == null || receiver.isEmpty()) {
             throw new IllegalArgumentException("Receiver cannot be null");
         }
         this.receiver = receiver;

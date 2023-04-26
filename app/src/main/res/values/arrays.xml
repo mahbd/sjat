@@ -15,4 +15,21 @@
         <item>BKash</item>
         <item>Other</item>
     </string-array>
+    <string-array name="arrays_items">
+        <item>Rod</item>
+        <item>Bali</item>
+        <item>Cement</item>
+        <item>Chula</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="arrays_units">
+        <item>Piece</item>
+        <item>Bag</item>
+        <item>Trolli</item>
+        <item>KG</item>
+        <item>CFT</item>
+        <item>Truck</item>
+        <item>Tin</item>
+        <item>Other</item>
+    </string-array>
 </resources>

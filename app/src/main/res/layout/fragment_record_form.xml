@@ -28,14 +28,40 @@
 
         <TableRow>
 
-            <AutoCompleteTextView
+            <Spinner
                 android:id="@+id/record_item_dropdown"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:hint="Item"
+                android:inputType="text"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray" />
+
+            <EditText
+                android:id="@+id/record_quantity"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_weight="1"
+                android:hint="Quantity"
+                android:inputType="numberDecimal"
+                android:textColor="@color/black"
+                android:textColorHint="@color/gray" />
+        </TableRow>
+
+        <TableRow>
+
+            <Spinner
+                android:id="@+id/record_unit_dropdown"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_weight="1"
+                android:hint="Unit"
                 android:inputType="text"
                 android:textColor="@color/black"
                 android:textColorHint="@color/gray" />
@@ -56,25 +82,32 @@
         <TableRow>
 
             <EditText
-                android:id="@+id/record_quantity"
+                android:id="@+id/record_timestamp1"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:hint="Quantity"
-                android:inputType="numberDecimal"
-                android:textColor="@color/black"
-                android:textColorHint="@color/gray" />
+                android:autofillHints=""
+                android:focusable="false"
+                android:inputType="number" />
 
-            <AutoCompleteTextView
-                android:id="@+id/record_unit_dropdown"
+            <EditText
+                android:id="@+id/record_timestamp2"
+                android:layout_width="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_weight="1"
+                android:autofillHints=""
+                android:focusable="false"
+                android:inputType="number" />
+
+            <Spinner
+                android:id="@+id/record_seller_dropdown"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
-                android:layout_weight="1"
-                android:hint="Unit"
+                android:layout_weight="2"
                 android:inputType="text"
                 android:textColor="@color/black"
                 android:textColorHint="@color/gray" />
@@ -83,6 +116,7 @@
         <TextView
             android:id="@+id/record_discount"
             android:text="Discount: 100Tk"
+            android:visibility="gone"
             android:textAlignment="center"
             android:textColor="@color/dark_green"
             android:textSize="25sp" />
@@ -93,10 +127,10 @@
             android:orientation="vertical">
 
             <Button
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:id="@+id/record_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:text="Save" />
         </LinearLayout>
     </TableLayout>

@@ -60,7 +60,6 @@ public class AddressFragment extends Fragment {
                 if (item.getItemId() == R.id.action_edit) {
                     String addressString = addresses.get(position);
                     long addressId1 = addressMap.get(addressString);
-                    AddressFragment addressFragment = new AddressFragment();
                     Bundle bundle = new Bundle();
                     bundle.putLong("address", addressId1);
                     NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
@@ -109,6 +108,7 @@ public class AddressFragment extends Fragment {
                 binding.etVillage.setText("");
                 binding.etUnion.setText("");
                 addresses.add(String.format("%s --> %s --> %s", newAddress.getPara(), newAddress.getVillage(), newAddress.getUnion()));
+                addressMap.put(String.format("%s --> %s --> %s", newAddress.getPara(), newAddress.getVillage(), newAddress.getUnion()), newAddress.getId());
                 adapter.notifyDataSetChanged();
             } else {
                 address.setPara(para);

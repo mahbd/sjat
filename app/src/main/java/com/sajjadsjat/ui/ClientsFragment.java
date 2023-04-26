@@ -42,8 +42,8 @@ public class ClientsFragment extends Fragment {
         binding.clientList.setAdapter(adapter);
 
         List<String> paras = new ArrayList<>();
-        for (Client client : clients) {
-            paras.add(client.getAddress().getPara());
+        for (Address address : Address.getAll()) {
+            paras.add(address.getPara());
         }
         new SimpleSearchableDropdown(this.getContext(), binding.paraDropdown, (s) -> {
             adapter.filterByPara(s.toString());

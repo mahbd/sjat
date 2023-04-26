@@ -37,14 +37,13 @@ public class PaymentFormFragment extends Fragment {
         binding = FragmentPaymentFormBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        List<Client> clients = Client.get(new HashMap<>());
         List<String> names = new ArrayList<>();
-        Map<String, Client> clientMap = new HashMap<>();
-        for (Client client : clients) {
-            clientMap.put(client.getName(), client);
+        Map<String, Client> namesMap = new HashMap<>();
+        for (Client client : Client.getAll()) {
+            namesMap.put(client.getName(), client);
             assert client.getExtra() != null;
             if (!client.getExtra().isEmpty()) {
-                names.add(String.format("%s %s %s", client.getName(), client.getAddress().getPara(), client.getExtra()));
+                names.add(String.format("%s %s %s", client.getName(), client.getExtra(), client.getAddress().getPara()));
             } else {
                 names.add(String.format("%s %s", client.getName(), client.getAddress().getPara()));
             }

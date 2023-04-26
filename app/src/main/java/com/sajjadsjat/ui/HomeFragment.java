@@ -18,6 +18,7 @@ import androidx.navigation.Navigation;
 import com.sajjadsjat.R;
 import com.sajjadsjat.adapter.ExpandableClientsAdapter;
 import com.sajjadsjat.databinding.FragmentHomeBinding;
+import com.sajjadsjat.model.Address;
 import com.sajjadsjat.model.Client;
 import com.sajjadsjat.model.ClientRecord;
 import com.sajjadsjat.model.Record;
@@ -77,10 +78,9 @@ public class HomeFragment extends Fragment {
         });
 
         List<String> paras = new ArrayList<>();
-        for (Client client : clients) {
-            paras.add(client.getAddress().getPara());
+        for (Address address : Address.getAll()) {
+            paras.add(address.getPara());
         }
-
         new SimpleSearchableDropdown(this.getContext(), paraDropdown, (s) -> {
             adapter.filterByPara(s.toString());
             return null;

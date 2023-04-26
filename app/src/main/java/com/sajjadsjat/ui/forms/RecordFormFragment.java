@@ -1,21 +1,31 @@
 package com.sajjadsjat.ui.forms;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
+import com.sajjadsjat.R;
 import com.sajjadsjat.databinding.FragmentRecordFormBinding;
+import com.sajjadsjat.model.Client;
+import com.sajjadsjat.model.Record;
 import com.sajjadsjat.utils.H;
 import com.sajjadsjat.utils.SimpleSearchableDropdown;
 
-import java.util.Arrays;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RecordFormFragment extends Fragment {
 
@@ -26,35 +36,74 @@ public class RecordFormFragment extends Fragment {
 
         binding = FragmentRecordFormBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        List<String> names = Arrays.asList("Ruhul Amin", "Sumon Hossain", "Rober Newbold");
-        List<String> items = Arrays.asList("Item 1", "Item 2", "Item 3");
-        List<String> units = Arrays.asList("Unit 1", "Unit 2", "Unit 3");
+
+        List<String> names = new ArrayList<>();
+        Map<String, Client> namesMap = new HashMap<>();
+        for (Client client : Client.getAll()) {
+            namesMap.put(client.getName(), client);
+            assert client.getExtra() != null;
+            if (!client.getExtra().isEmpty()) {
+                names.add(String.format("%s %s %s", client.getName(), client.getExtra(), client.getAddress().getPara()));
+            } else {
+                names.add(String.format("%s %s", client.getName(), client.getAddress().getPara()));
+            }
+        }
         new SimpleSearchableDropdown(requireContext(), binding.recordNameDropdown, (s) -> s).showDropdown(names);
-        new SimpleSearchableDropdown(requireContext(), binding.recordItemDropdown, (s) -> s).showDropdown(items);
-        new SimpleSearchableDropdown(requireContext(), binding.recordUnitDropdown, (s) -> s).showDropdown(units);
+
+        ArrayAdapter<CharSequence> itemAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.arrays_items, android.R.layout.simple_spinner_item);
+        binding.recordItemDropdown.setAdapter(itemAdapter);
+
+        ArrayAdapter<CharSequence> unitAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.arrays_units, android.R.layout.simple_spinner_item);
+        binding.recordUnitDropdown.setAdapter(unitAdapter);
+
+        ArrayAdapter<CharSequence> sellerAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.arrays_employees, android.R.layout.simple_spinner_item);
+        binding.recordSellerDropdown.setAdapter(sellerAdapter);
+
+        LocalDateTime now = LocalDateTime.now();
+        binding.recordTimestamp1.setText(String.format("%s", H.datetimeToTimestamp(LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 0, 0))));
+        binding.recordTimestamp1.setOnClickListener(v -> {
+            int year = now.getYear();
+            int month = now.getMonthValue() - 1;
+            int day = now.getDayOfMonth();
+            DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(), (view, year1, month1, dayOfMonth) -> {
+                LocalDateTime dateTime = LocalDateTime.of(year1, month1 + 1, dayOfMonth, 0, 0);
+                long timestamp = H.datetimeToTimestamp(dateTime);
+                binding.recordTimestamp1.setText(String.valueOf(timestamp));
+            }, year, month, day);
+
+            datePickerDialog.show();
+        });
+
+        binding.recordTimestamp2.setText(String.format("%s", now.getHour() * 60 + now.getMinute()));
+        binding.recordTimestamp2.setOnClickListener(v -> {
+            int hour = now.getHour() % 12;
+            if (hour == 0) hour = 12;
+            int minute = now.getMinute();
+            TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(), (view, hourOfDay, minute1) -> {
+                int totalMinutes = hourOfDay * 60 + minute1;
+                binding.recordTimestamp2.setText(String.valueOf(totalMinutes));
+            }, hour, minute, false);
+
+
+            timePickerDialog.show();
+        });
 
         binding.recordSave.setOnClickListener(v -> {
             String name = binding.recordNameDropdown.getText().toString();
-            String item = binding.recordItemDropdown.getText().toString();
-            String unit = binding.recordUnitDropdown.getText().toString();
+            String item = binding.recordItemDropdown.getSelectedItem().toString();
             double quantity = H.stringToDouble(binding.recordQuantity.getText().toString());
+            String unit = binding.recordUnitDropdown.getSelectedItem().toString();
             double price = H.stringToDouble(binding.recordPrice.getText().toString());
+            long timestamp1 = H.stringToNumber(binding.recordTimestamp1.getText().toString());
+            long timestamp2 = H.stringToNumber(binding.recordTimestamp2.getText().toString());
+            long createdAt = timestamp1 + timestamp2;
+            String seller = binding.recordSellerDropdown.getSelectedItem().toString();
 
             if (name.isEmpty() || names.stream().noneMatch(name::equals)) {
                 binding.recordNameDropdown.setError("Name is required");
                 return;
             }
             binding.recordNameDropdown.setError(null);
-            if (item.isEmpty() || names.stream().noneMatch(item::equals)) {
-                binding.recordItemDropdown.setError("Item is required");
-                return;
-            }
-            binding.recordItemDropdown.setError(null);
-            if (unit.isEmpty() || names.stream().noneMatch(unit::equals)) {
-                binding.recordUnitDropdown.setError("Unit is required");
-                return;
-            }
-            binding.recordUnitDropdown.setError(null);
             if (quantity == 0) {
                 binding.recordQuantity.setError("Quantity is required");
                 return;
@@ -65,7 +114,10 @@ public class RecordFormFragment extends Fragment {
                 return;
             }
             binding.recordPrice.setError(null);
-            Toast.makeText(requireContext(), "Record Saved", Toast.LENGTH_SHORT).show();
+            new Record(namesMap.get(name), createdAt, 0.0, item, quantity, seller, unit, price / quantity);
+            Toast.makeText(requireContext(), "Record saved", Toast.LENGTH_SHORT).show();
+            NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.nav_home);
         });
         return root;
     }
