@@ -24,6 +24,19 @@ public class Record extends RealmObject {
         return id;
     }
 
+    public String getDateTime() {
+        LocalDateTime dateTime = LocalDateTime.ofEpochSecond(this.createdAt, 0, ZoneOffset.UTC);
+        String month = dateTime.getMonthValue() < 10 ? "0" + dateTime.getMonthValue() : "" + dateTime.getMonthValue();
+        String day = dateTime.getDayOfMonth() < 10 ? "0" + dateTime.getDayOfMonth() : "" + dateTime.getDayOfMonth();
+        int full_hour = dateTime.getHour();
+        if (full_hour > 12) {
+            full_hour -= 12;
+        }
+        String hour = full_hour < 10 ? "0" + full_hour : "" + full_hour;
+        String minute = dateTime.getMinute() < 10 ? "0" + dateTime.getMinute() : "" + dateTime.getMinute();
+        return month + "-" + day + " " + hour + ":" + minute + " " + (dateTime.getHour() < 12 ? "am" : "pm");
+    }
+
     public double getDiscount() {
         return discount;
     }
@@ -77,19 +90,6 @@ public class Record extends RealmObject {
             this.id = maxId == null ? 1 : maxId.longValue() + 1;
             realm.copyToRealmOrUpdate(this);
         });
-    }
-
-    public String getDateTime() {
-        LocalDateTime dateTime = LocalDateTime.ofEpochSecond(this.createdAt / 1000, 0, ZoneOffset.UTC);
-        String month = dateTime.getMonthValue() < 10 ? "0" + dateTime.getMonthValue() : "" + dateTime.getMonthValue();
-        String day = dateTime.getDayOfMonth() < 10 ? "0" + dateTime.getDayOfMonth() : "" + dateTime.getDayOfMonth();
-        int full_hour = dateTime.getHour();
-        if (full_hour > 12) {
-            full_hour -= 12;
-        }
-        String hour = full_hour < 10 ? "0" + full_hour : "" + full_hour;
-        String minute = dateTime.getMinute() < 10 ? "0" + dateTime.getMinute() : "" + dateTime.getMinute();
-        return month + "-" + day + " " + hour + ":" + minute + " " + (dateTime.getHour() < 12 ? "am" : "pm");
     }
 
     public static Record get(long id) {

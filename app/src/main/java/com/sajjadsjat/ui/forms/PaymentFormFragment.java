@@ -71,13 +71,13 @@ public class PaymentFormFragment extends Fragment {
             datePickerDialog.show();
         });
 
-        binding.paymentTimestamp2.setText(String.format("%s", now.getHour() * 60 + now.getMinute()));
+        binding.paymentTimestamp2.setText(String.format("%s", (now.getHour() * 60 + now.getMinute()) * 60));
         binding.paymentTimestamp2.setOnClickListener(v -> {
             int hour = now.getHour() % 12;
             if (hour == 0) hour = 12;
             int minute = now.getMinute();
             TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(), (view, hourOfDay, minute1) -> {
-                int totalMinutes = hourOfDay * 60 + minute1;
+                int totalMinutes = (hourOfDay * 60 + minute1) * 60;
                 binding.paymentTimestamp2.setText(String.valueOf(totalMinutes));
             }, hour, minute, false);
 

@@ -27,7 +27,7 @@ public class Payment extends RealmObject {
     }
 
     public String getDateTime() {
-        LocalDateTime dateTime = LocalDateTime.ofEpochSecond(this.createdAt / 1000, 0, ZoneOffset.UTC);
+        LocalDateTime dateTime = LocalDateTime.ofEpochSecond(this.createdAt, 0, ZoneOffset.UTC);
         String month = dateTime.getMonthValue() < 10 ? "0" + dateTime.getMonthValue() : "" + dateTime.getMonthValue();
         String day = dateTime.getDayOfMonth() < 10 ? "0" + dateTime.getDayOfMonth() : "" + dateTime.getDayOfMonth();
         int full_hour = dateTime.getHour();

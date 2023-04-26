@@ -39,14 +39,6 @@
                 android:text="10TRUCTOR" />
 
             <TextView
-                android:id="@+id/record_detail_item"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_weight="1"
-                android:text="CEMENT" />
-
-            <TextView
                 android:id="@+id/record_detail_seller"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

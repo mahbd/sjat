@@ -100,8 +100,6 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
             childTextView.setText(String.format(Locale.getDefault(), "%s  %s    %.0fTk", record.getDateTime(), record.getItem(), price));
             TextView recordDetailQuantity = convertView.findViewById(R.id.record_detail_quantity);
             recordDetailQuantity.setText(String.format(Locale.getDefault(), "%.2f %s", record.getQuantity(), record.getUnit()));
-            TextView recordDetailItem = convertView.findViewById(R.id.record_detail_item);
-            recordDetailItem.setText(record.getItem());
             TextView recordDetailSeller = convertView.findViewById(R.id.record_detail_seller);
             recordDetailSeller.setText(record.getSeller());
             TextView recordDetailUnitPrice = convertView.findViewById(R.id.record_detail_unit_price);

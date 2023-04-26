@@ -21,6 +21,6 @@ public class H {
     }
 
     public static long datetimeToTimestamp(LocalDateTime datetime) {
-        return datetime.toInstant(ZoneOffset.UTC).toEpochMilli();
+        return datetime.toInstant(ZoneOffset.UTC).toEpochMilli() / 1000;
     }
 }
