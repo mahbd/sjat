@@ -8,25 +8,19 @@ import javax.annotation.Nullable;
 import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
-import io.realm.annotations.LinkingObjects;
 import io.realm.annotations.PrimaryKey;
 
 public class Client extends RealmObject {
     @PrimaryKey
     private long id;
+    private Address address;
+    private double due;
+    @Nullable
+    private String extra;
     private String name;
-
     @Nullable
     private String fathersName;
     private String phone;
-    private Address address;
-    @Nullable
-    private String extra;
-    private double due;
-    @LinkingObjects("client")
-    public final RealmResults<Record> records;
-    @LinkingObjects("client")
-    public final RealmResults<Payment> payments;
 
     public static String formatName(String name) {
         if (name == null || name.trim().isEmpty()) {
@@ -42,63 +36,8 @@ public class Client extends RealmObject {
         return sb.toString().trim();
     }
 
-
     public long getId() {
         return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        name = formatName(name);
-        if (validateNameFatherName(name, fathersName) != null) {
-            throw new RuntimeException(validateNameFatherName(name, fathersName));
-        }
-        if (name.equals(this.name)) {
-            return;
-        }
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        this.name = name;
-        realm.commitTransaction();
-    }
-
-    @Nullable
-    public String getFathersName() {
-        return fathersName;
-    }
-
-    public void setFathersName(@Nullable String fathersName) {
-        fathersName = formatName(fathersName);
-        if (validateNameFatherName(name, fathersName) != null) {
-            throw new RuntimeException(validateNameFatherName(name, fathersName));
-        }
-        if (fathersName.equals(this.fathersName)) {
-            return;
-        }
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        this.fathersName = fathersName;
-        realm.commitTransaction();
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        if (validatePhone(phone) != null) {
-            throw new RuntimeException(validatePhone(phone));
-        }
-        if (phone.equals(this.phone)) {
-            return;
-        }
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        this.phone = phone;
-        realm.commitTransaction();
     }
 
     public Address getAddress() {
@@ -116,6 +55,29 @@ public class Client extends RealmObject {
         realm.beginTransaction();
         this.address = address;
         realm.commitTransaction();
+    }
+
+    public double getDue() {
+        Realm realm = Realm.getDefaultInstance();
+        List<Record> records = realm.where(Record.class).equalTo("client.id", id).findAll();
+        List<Payment> payments = realm.where(Payment.class).equalTo("client.id", id).findAll();
+        double due = 0;
+        for (Record record : records) {
+            due += record.getUnitPrice() * record.getQuantity();
+        }
+        for (Payment payment : payments) {
+            due -= payment.getAmount();
+        }
+        if (this.due == due) {
+            return due;
+        }
+        realm.beginTransaction();
+        this.due = due;
+        realm.commitTransaction();
+        return due;
+    }
+
+    public Client() {
     }
 
     @Nullable
@@ -139,13 +101,58 @@ public class Client extends RealmObject {
         realm.commitTransaction();
     }
 
-    public double getDue() {
-        return due;
+    @Nullable
+    public String getFathersName() {
+        return fathersName;
     }
 
-    public Client() {
-        this.records = null;
-        this.payments = null;
+    public void setFathersName(@Nullable String fathersName) {
+        fathersName = formatName(fathersName);
+        if (validateNameFatherName(name, fathersName) != null) {
+            throw new RuntimeException(validateNameFatherName(name, fathersName));
+        }
+        if (fathersName.equals(this.fathersName)) {
+            return;
+        }
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        this.fathersName = fathersName;
+        realm.commitTransaction();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        name = formatName(name);
+        if (validateNameFatherName(name, fathersName) != null) {
+            throw new RuntimeException(validateNameFatherName(name, fathersName));
+        }
+        if (name.equals(this.name)) {
+            return;
+        }
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        this.name = name;
+        realm.commitTransaction();
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        if (validatePhone(phone) != null) {
+            throw new RuntimeException(validatePhone(phone));
+        }
+        if (phone.equals(this.phone)) {
+            return;
+        }
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        this.phone = phone;
+        realm.commitTransaction();
     }
 
     public Client(String name, @androidx.annotation.Nullable String fathersName, String phone, Address address, @androidx.annotation.Nullable String extra) {
@@ -166,8 +173,6 @@ public class Client extends RealmObject {
         }
         this.address = address;
         this.extra = extra;
-        this.records = null;
-        this.payments = null;
         this.save();
     }
 

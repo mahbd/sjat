@@ -14,8 +14,6 @@ public class Address extends RealmObject {
     private String para;
     private String village;
     private String union;
-    @LinkingObjects("address")
-    public final RealmResults<Client> clients;
 
     public long getId() {
         return id;
@@ -67,7 +65,6 @@ public class Address extends RealmObject {
     }
 
     public Address() {
-        this.clients = null;
     }
 
     public Address(String para, String village, String union) {
@@ -76,7 +73,6 @@ public class Address extends RealmObject {
         this.para = format(para);
         this.village = format(village);
         this.union = format(union);
-        this.clients = null;
         Realm.getDefaultInstance().executeTransaction(r -> r.copyToRealm(this));
     }
 
