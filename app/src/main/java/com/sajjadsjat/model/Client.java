@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.RealmResults;
+import io.realm.Sort;
 import io.realm.annotations.PrimaryKey;
 
 public class Client extends RealmObject {
@@ -243,7 +244,7 @@ public class Client extends RealmObject {
     }
 
     public static List<Client> getAll() {
-        return Realm.getDefaultInstance().where(Client.class).findAll();
+        return Realm.getDefaultInstance().where(Client.class).findAll().sort("due", Sort.DESCENDING);
     }
 
     public static void delete(long id) {

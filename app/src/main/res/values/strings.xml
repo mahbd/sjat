@@ -11,6 +11,7 @@
     <string name="action_items">Items</string>
     <string name="action_pay_methods">Pay Methods</string>
     <string name="action_units">Units</string>
+    <string name="action_backup_restore">Backup Restore</string>
 
     <string name="menu_home">Home</string>
     <string name="menu_clients">Clients</string>

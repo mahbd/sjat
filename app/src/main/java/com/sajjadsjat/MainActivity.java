@@ -1,5 +1,6 @@
 package com.sajjadsjat;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        com.sajjadsjat.databinding.ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMain.toolbar);
@@ -70,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
             navController.navigate(R.id.nav_pay_methods);
         } else if (item.getItemId() == R.id.action_units) {
             navController.navigate(R.id.nav_units);
+        } else if (item.getItemId() == R.id.action_backup_restore) {
+            Intent intent = new Intent(this, BackupActivity.class);
+            startActivity(intent);
         }
         return true;
     }
