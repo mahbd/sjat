@@ -1,7 +1,10 @@
 package com.sajjadsjat.utils;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
 public class H {
-    public static int stringToNumber(String s) {
+    public static long stringToNumber(String s) {
         try {
             return Integer.parseInt(s);
         } catch (NumberFormatException e) {
@@ -15,5 +18,9 @@ public class H {
         } catch (NumberFormatException e) {
             return 0;
         }
+    }
+
+    public static long datetimeToTimestamp(LocalDateTime datetime) {
+        return datetime.toInstant(ZoneOffset.UTC).toEpochMilli();
     }
 }

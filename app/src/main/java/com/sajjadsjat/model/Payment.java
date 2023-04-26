@@ -6,7 +6,6 @@ import java.time.ZoneOffset;
 import io.realm.Realm;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
-import io.realm.annotations.Required;
 
 public class Payment extends RealmObject {
     @PrimaryKey
@@ -14,7 +13,7 @@ public class Payment extends RealmObject {
     private double amount;
     private Client client;
     private long createdAt;
-    private double discount;
+    private boolean isDiscount;
     private PayMethod payMethod;
     private Employee receiver;
 
@@ -25,7 +24,7 @@ public class Payment extends RealmObject {
     public Payment() {
     }
 
-    public Payment(double amount, Client client, LocalDateTime createdAt, double discount, PayMethod payMethod, Employee receiver) {
+    public Payment(double amount, Client client, LocalDateTime createdAt, boolean isDiscount, PayMethod payMethod, Employee receiver) {
         Realm realm = Realm.getDefaultInstance();
         Number maxId = realm.where(Payment.class).max("id");
         this.id = maxId == null ? 1 : maxId.longValue() + 1;
@@ -35,7 +34,7 @@ public class Payment extends RealmObject {
             throw new IllegalArgumentException("Client cannot be null");
         }
         this.client = client;
-        this.discount = discount;
+        this.isDiscount = isDiscount;
         if (payMethod == null) {
             throw new IllegalArgumentException("PayMethod cannot be null");
         }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="arrays_employees">
+        <item>Ibrahim Khalil</item>
+        <item>Dalim</item>
+        <item>Kausar</item>
+        <item>Sobur</item>
+        <item>Rafiq</item>
+        <item>Dollar</item>
+        <item>Other</item>
+    </string-array>
+    <string-array name="arrays_pay_methods">
+        <item>Cash</item>
+        <item>Rocket</item>
+        <item>BKash</item>
+        <item>Other</item>
+    </string-array>
+</resources>

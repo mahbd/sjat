@@ -1,26 +1,32 @@
 package com.sajjadsjat.ui.forms;
 
+import static java.lang.String.format;
+
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import com.sajjadsjat.R;
 import com.sajjadsjat.databinding.FragmentPaymentFormBinding;
 import com.sajjadsjat.model.Client;
-import com.sajjadsjat.model.ClientRecord;
-import com.sajjadsjat.model.Employee;
 import com.sajjadsjat.utils.H;
 import com.sajjadsjat.utils.SimpleSearchableDropdown;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class PaymentFormFragment extends Fragment {
 
@@ -45,19 +51,50 @@ public class PaymentFormFragment extends Fragment {
             }
         }
 
-        List<Employee> employees = Employee.getAll();
-        List<String> employeeNames = new ArrayList<>();
-        for (Employee employee : employees) {
-            employeeNames.add(employee.getName());
-        }
-
+        List<String> employees = Arrays.asList(getResources().getStringArray(R.array.arrays_employees));
         new SimpleSearchableDropdown(requireContext(), binding.paymentNameDropdown, (s) -> s).showDropdown(names);
-        new SimpleSearchableDropdown(requireContext(), binding.paymentReceiverDropdown, (s) -> s).showDropdown(employeeNames);
+        ArrayAdapter<CharSequence> receiverAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.arrays_employees, android.R.layout.simple_spinner_item);
+        binding.paymentReceiverDropdown.setAdapter(receiverAdapter);
+        ArrayAdapter<CharSequence> methodAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.arrays_pay_methods, android.R.layout.simple_spinner_item);
+        binding.paymentMethodDropdown.setAdapter(methodAdapter);
+
+        LocalDateTime now = LocalDateTime.now();
+        binding.paymentTimestamp1.setText(String.format("%s", H.datetimeToTimestamp(LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 0, 0))));
+        binding.paymentTimestamp1.setOnClickListener(v -> {
+            int year = now.getYear();
+            int month = now.getMonthValue() - 1;
+            int day = now.getDayOfMonth();
+            DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(), (view, year1, month1, dayOfMonth) -> {
+                LocalDateTime dateTime = LocalDateTime.of(year1, month1 + 1, dayOfMonth, 0, 0);
+                long timestamp = H.datetimeToTimestamp(dateTime);
+                binding.paymentTimestamp1.setText(String.valueOf(timestamp));
+            }, year, month, day);
+
+            datePickerDialog.show();
+        });
+
+        binding.paymentTimestamp2.setText(String.format("%s",now.getHour() * 60 + now.getMinute()));
+        binding.paymentTimestamp2.setOnClickListener(v -> {
+            int hour = now.getHour() % 12;
+            if (hour == 0) hour = 12;
+            int minute = now.getMinute();
+            TimePickerDialog timePickerDialog = new TimePickerDialog(requireContext(), (view, hourOfDay, minute1) -> {
+                int totalMinutes = hourOfDay * 60 + minute1;
+                binding.paymentTimestamp2.setText(String.valueOf(totalMinutes));
+            }, hour, minute, false);
+
+
+            timePickerDialog.show();
+        });
 
         binding.paymentSave.setOnClickListener(v -> {
             String name = binding.paymentNameDropdown.getText().toString();
-            int amount = H.stringToNumber(binding.paymentAmount.getText().toString());
-            String receiver = binding.paymentReceiverDropdown.getText().toString();
+            int amount = (int) H.stringToNumber(binding.paymentAmount.getText().toString());
+            String receiver = binding.paymentReceiverDropdown.getSelectedItem().toString();
+            long timestamp1 = H.stringToNumber(binding.paymentTimestamp1.getText().toString());
+            long timestamp2 = H.stringToNumber(binding.paymentTimestamp2.getText().toString());
+            long timestamp = timestamp1 + timestamp2;
+            String method = binding.paymentMethodDropdown.getSelectedItem().toString();
 
             if (name.isEmpty() || names.stream().noneMatch(name::equals)) {
                 binding.paymentNameDropdown.setError("Name is required");
@@ -69,12 +106,7 @@ public class PaymentFormFragment extends Fragment {
                 return;
             }
             binding.paymentAmount.setError(null);
-            if (receiver.isEmpty() || names.stream().noneMatch(receiver::equals)) {
-                binding.paymentReceiverDropdown.setError("Receiver is required");
-                return;
-            }
-            binding.paymentReceiverDropdown.setError(null);
-            Toast.makeText(requireContext(), "Payment Saved", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Payment Saved by " + receiver, Toast.LENGTH_SHORT).show();
         });
 
         return root;
