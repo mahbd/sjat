@@ -40,13 +40,15 @@ public class PaymentFormFragment extends Fragment {
         List<String> names = new ArrayList<>();
         Map<String, Client> namesMap = new HashMap<>();
         for (Client client : Client.getAll()) {
-            namesMap.put(client.getName(), client);
+            String name;
             assert client.getExtra() != null;
             if (!client.getExtra().isEmpty()) {
-                names.add(String.format("%s %s %s", client.getName(), client.getExtra(), client.getAddress().getPara()));
+                name = String.format("%s %s %s", client.getName(), client.getExtra(), client.getAddress().getPara());
             } else {
-                names.add(String.format("%s %s", client.getName(), client.getAddress().getPara()));
+                name = String.format("%s %s", client.getName(), client.getAddress().getPara());
             }
+            names.add(name);
+            namesMap.put(name, client);
         }
 
         List<String> employees = Arrays.asList(getResources().getStringArray(R.array.arrays_employees));

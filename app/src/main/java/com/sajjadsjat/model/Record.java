@@ -51,6 +51,10 @@ public class Record extends RealmObject {
     }
 
     public Record(Client client, long createdAt, double discount, String item, double quantity, String seller, String unit, double unitPrice) {
+        if (client == null) {
+            throw new IllegalArgumentException("Client cannot be null");
+        }
+        this.client = client;
         this.createdAt = createdAt;
         if (item == null || item.isEmpty()) {
             throw new IllegalArgumentException("Item cannot be null");
@@ -71,6 +75,7 @@ public class Record extends RealmObject {
         Realm.getDefaultInstance().executeTransaction(realm -> {
             Number maxId = realm.where(Record.class).max("id");
             this.id = maxId == null ? 1 : maxId.longValue() + 1;
+            realm.copyToRealmOrUpdate(this);
         });
     }
 
@@ -94,6 +99,6 @@ public class Record extends RealmObject {
 
     public static List<Record> getByClient(Client client) {
         Realm realm = Realm.getDefaultInstance();
-        return realm.where(Record.class).equalTo("client", client.getId()).findAll();
+        return realm.where(Record.class).equalTo("client.id", client.getId()).findAll();
     }
 }
