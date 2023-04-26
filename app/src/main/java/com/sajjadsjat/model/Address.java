@@ -54,6 +54,10 @@ public class Address extends RealmObject {
         realm.commitTransaction();
     }
 
+    public String toString() {
+        return para + ", " + village + ", " + union;
+    }
+
     public static String format(String str) {
         if (str == null || str.isEmpty()) {
             return str;

@@ -32,6 +32,20 @@ public class ClientFormFragment extends Fragment {
         binding = FragmentClientFormBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        long clientId = 0L;
+        if (getArguments() != null) {
+            clientId = getArguments().getLong("client");
+        }
+        Client client = Client.get(clientId);
+        if (client != null) {
+            binding.clientName.setText(client.getName());
+            binding.clientFathersName.setText(client.getFathersName());
+            binding.clientPhone.setText(client.getPhone());
+            binding.clientAddressDropdown.setText(client.getAddress().toString());
+            binding.clientExtra.setText(client.getExtra());
+            binding.clientSave.setText("Update Client");
+        }
+
         List<Address> addresseObjects = Address.getAll();
         List<String> addresses = new ArrayList<>();
         Map<String, Address> addressMap = new HashMap<>();
@@ -71,10 +85,21 @@ public class ClientFormFragment extends Fragment {
                 return;
             }
             binding.clientAddressDropdown.setError(null);
-            new Client(name, fathersName, phone, addressMap.get(address), extra);
-            Toast.makeText(requireContext(), "Client Saved", Toast.LENGTH_SHORT).show();
-            NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.nav_clients);
+            if (client == null) {
+                new Client(name, fathersName, phone, addressMap.get(address), extra);
+                Toast.makeText(requireContext(), "Client Saved", Toast.LENGTH_SHORT).show();
+                NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
+                navController.navigate(R.id.nav_clients);
+            }  else {
+                client.setName(name);
+                client.setFathersName(fathersName);
+                client.setPhone(phone);
+                client.setAddress(addressMap.get(address));
+                client.setExtra(extra);
+                Toast.makeText(requireContext(), "Client Updated", Toast.LENGTH_SHORT).show();
+                NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
+                navController.navigate(R.id.nav_clients);
+            }
         });
         return root;
     }

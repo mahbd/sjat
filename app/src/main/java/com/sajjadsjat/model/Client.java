@@ -21,7 +21,8 @@ public class Client extends RealmObject {
     private String phone;
     private Address address;
     @Nullable
-    private String extraIdentifier;
+    private String extra;
+    private double due;
     @LinkingObjects("client")
     public final RealmResults<Record> records;
     @LinkingObjects("client")
@@ -51,8 +52,17 @@ public class Client extends RealmObject {
     }
 
     public void setName(String name) {
+        name = formatName(name);
+        if (validateNameFatherName(name, fathersName) != null) {
+            throw new RuntimeException(validateNameFatherName(name, fathersName));
+        }
+        if (name.equals(this.name)) {
+            return;
+        }
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
         this.name = name;
-        this.save();
+        realm.commitTransaction();
     }
 
     @Nullable
@@ -61,8 +71,17 @@ public class Client extends RealmObject {
     }
 
     public void setFathersName(@Nullable String fathersName) {
+        fathersName = formatName(fathersName);
+        if (validateNameFatherName(name, fathersName) != null) {
+            throw new RuntimeException(validateNameFatherName(name, fathersName));
+        }
+        if (fathersName.equals(this.fathersName)) {
+            return;
+        }
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
         this.fathersName = fathersName;
-        this.save();
+        realm.commitTransaction();
     }
 
     public String getPhone() {
@@ -70,8 +89,16 @@ public class Client extends RealmObject {
     }
 
     public void setPhone(String phone) {
+        if (validatePhone(phone) != null) {
+            throw new RuntimeException(validatePhone(phone));
+        }
+        if (phone.equals(this.phone)) {
+            return;
+        }
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
         this.phone = phone;
-        this.save();
+        realm.commitTransaction();
     }
 
     public Address getAddress() {
@@ -79,24 +106,41 @@ public class Client extends RealmObject {
     }
 
     public void setAddress(Address address) {
-        if (this.address == null) {
+        if (address == null) {
             throw new RuntimeException("Address is null");
         }
+        if (address.equals(this.address)) {
+            return;
+        }
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
         this.address = address;
-        this.save();
+        realm.commitTransaction();
     }
 
     @Nullable
-    public String getExtraIdentifier() {
-        if (extraIdentifier == null) {
+    public String getExtra() {
+        if (extra == null) {
             return "";
         }
-        return extraIdentifier;
+        return extra;
     }
 
-    public void setExtraIdentifier(@Nullable String extraIdentifier) {
-        this.extraIdentifier = extraIdentifier;
-        this.save();
+    public void setExtra(@Nullable String extra) {
+        if (extra == null) {
+            extra = "";
+        }
+        if (extra.equals(this.extra)) {
+            return;
+        }
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        this.extra = extra;
+        realm.commitTransaction();
+    }
+
+    public double getDue() {
+        return due;
     }
 
     public Client() {
@@ -104,7 +148,7 @@ public class Client extends RealmObject {
         this.payments = null;
     }
 
-    public Client(String name, @androidx.annotation.Nullable String fathersName, String phone, Address address, @androidx.annotation.Nullable String extraIdentifier) {
+    public Client(String name, @androidx.annotation.Nullable String fathersName, String phone, Address address, @androidx.annotation.Nullable String extra) {
         Realm realm = Realm.getDefaultInstance();
         Number maxId = realm.where(Client.class).max("id");
         this.id = maxId == null ? 1 : maxId.intValue() + 1;
@@ -121,7 +165,7 @@ public class Client extends RealmObject {
             throw new RuntimeException("Address is null");
         }
         this.address = address;
-        this.extraIdentifier = extraIdentifier;
+        this.extra = extra;
         this.records = null;
         this.payments = null;
         this.save();
@@ -190,6 +234,10 @@ public class Client extends RealmObject {
         for (String key : filters.keySet()) {
             clients = clients.where().equalTo(key, filters.get(key)).findAll();
         }
+        return Realm.getDefaultInstance().where(Client.class).findAll();
+    }
+
+    public static List<Client> getAll() {
         return Realm.getDefaultInstance().where(Client.class).findAll();
     }
 

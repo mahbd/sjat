@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class PaymentFormFragment extends Fragment {
 
@@ -43,9 +42,9 @@ public class PaymentFormFragment extends Fragment {
         Map<String, Client> clientMap = new HashMap<>();
         for (Client client : clients) {
             clientMap.put(client.getName(), client);
-            assert client.getExtraIdentifier() != null;
-            if (!client.getExtraIdentifier().isEmpty()) {
-                names.add(String.format("%s %s %s", client.getName(), client.getAddress().getPara(), client.getExtraIdentifier()));
+            assert client.getExtra() != null;
+            if (!client.getExtra().isEmpty()) {
+                names.add(String.format("%s %s %s", client.getName(), client.getAddress().getPara(), client.getExtra()));
             } else {
                 names.add(String.format("%s %s", client.getName(), client.getAddress().getPara()));
             }

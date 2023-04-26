@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.sajjadsjat.R;
 import com.sajjadsjat.databinding.FragmentAddressBinding;
@@ -37,6 +39,7 @@ public class AddressFragment extends Fragment {
             binding.etPara.setText(address.getPara());
             binding.etVillage.setText(address.getVillage());
             binding.etUnion.setText(address.getUnion());
+            binding.btnSaveAddress.setText("Update Address");
         }
 
         List<Address> addresseObjects = Address.getAll();
@@ -52,7 +55,7 @@ public class AddressFragment extends Fragment {
 
         binding.lvAddresses.setOnItemLongClickListener((parent, view, position, id) -> {
             PopupMenu popupMenu = new PopupMenu(requireContext(), view);
-            popupMenu.getMenuInflater().inflate(R.menu.address_popup, popupMenu.getMenu());
+            popupMenu.getMenuInflater().inflate(R.menu.long_popup, popupMenu.getMenu());
             popupMenu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == R.id.action_edit) {
                     String addressString = addresses.get(position);
@@ -60,8 +63,8 @@ public class AddressFragment extends Fragment {
                     AddressFragment addressFragment = new AddressFragment();
                     Bundle bundle = new Bundle();
                     bundle.putLong("address", addressId1);
-                    addressFragment.setArguments(bundle);
-                    requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, addressFragment).commit();
+                    NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
+                    navController.navigate(R.id.nav_address, bundle);
                 } else if (item.getItemId() == R.id.action_delete) {
                     String addressString = addresses.get(position);
                     long addressId1 = addressMap.get(addressString);

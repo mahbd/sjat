@@ -20,17 +20,13 @@ import com.sajjadsjat.adapter.ExpandableClientsAdapter;
 import com.sajjadsjat.databinding.FragmentHomeBinding;
 import com.sajjadsjat.model.Client;
 import com.sajjadsjat.model.ClientRecord;
-import com.sajjadsjat.model.Item;
 import com.sajjadsjat.model.Record;
-import com.sajjadsjat.model.Unit;
 import com.sajjadsjat.utils.SimpleSearchableDropdown;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class HomeFragment extends Fragment {
 
@@ -80,8 +76,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        Set<String> paras = new HashSet<>();
-        paras.add("");
+        List<String> paras = new ArrayList<>();
         for (Client client : clients) {
             paras.add(client.getAddress().getPara());
         }
@@ -96,28 +91,13 @@ public class HomeFragment extends Fragment {
             navController.navigate(R.id.nav_record_form);
         });
 
+
         binding.addPayment.setOnClickListener(view -> {
             NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.nav_payment_form);
         });
 
         return root;
-    }
-
-    Item getOrCreateItem(String name) {
-        Item item = Item.get(name);
-        if (item == null) {
-            item = new Item(name);
-        }
-        return item;
-    }
-
-    Unit getOrCreateUnit(String name) {
-        Unit unit = Unit.get(name);
-        if (unit == null) {
-            unit = new Unit(name);
-        }
-        return unit;
     }
 
     @Override
