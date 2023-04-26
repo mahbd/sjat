@@ -27,6 +27,20 @@ public class Client extends RealmObject {
     @LinkingObjects("client")
     public final RealmResults<Payment> payments;
 
+    public static String formatName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            return "";
+        }
+        name = name.trim();
+        name = name.toLowerCase();
+        String[] words = name.split(" ");
+        StringBuilder sb = new StringBuilder();
+        for (String word : words) {
+            sb.append(word.substring(0, 1).toUpperCase()).append(word.substring(1)).append(" ");
+        }
+        return sb.toString().trim();
+    }
+
 
     public long getId() {
         return id;
@@ -94,11 +108,11 @@ public class Client extends RealmObject {
         Realm realm = Realm.getDefaultInstance();
         Number maxId = realm.where(Client.class).max("id");
         this.id = maxId == null ? 1 : maxId.intValue() + 1;
-        if (validateNameFatherName(name, fathersName) != null) {
-            throw new RuntimeException(validateNameFatherName(name, fathersName));
+        if (validateNameFatherName(formatName(name), formatName(fathersName)) != null) {
+            throw new RuntimeException(validateNameFatherName(formatName(name), formatName(fathersName)));
         }
-        this.name = name;
-        this.fathersName = fathersName;
+        this.name = formatName(name);
+        this.fathersName = formatName(fathersName);
         if (validatePhone(phone) != null) {
             throw new RuntimeException(validatePhone(phone));
         }
@@ -113,7 +127,7 @@ public class Client extends RealmObject {
         this.save();
     }
 
-    static String validatePhone(@androidx.annotation.Nullable String phone) {
+    public static String validatePhone(@androidx.annotation.Nullable String phone) {
         if (phone == null) {
             return "Phone cannot be null";
         }

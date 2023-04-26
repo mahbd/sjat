@@ -50,63 +50,31 @@
             android:textColor="@color/black"
             android:textColorHint="@color/gray" />
 
-        <TableRow>
+        <AutoCompleteTextView
+            android:id="@+id/client_address_dropdown"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:autofillHints="postalAddress"
+            android:hint="Address"
+            android:inputType="textPostalAddress"
+            android:textColor="@color/black"
+            android:textColorHint="@color/gray" />
 
-            <AutoCompleteTextView
-                android:id="@+id/client_para_dropdown"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
-                android:layout_weight="1"
-                android:autofillHints="postalAddress"
-                android:hint="Para"
-                android:inputType="textPostalAddress"
-                android:textColor="@color/black"
-                android:textColorHint="@color/gray" />
-
-            <AutoCompleteTextView
-                android:id="@+id/client_village_dropdown"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
-                android:layout_weight="1"
-                android:autofillHints="postalAddress"
-                android:hint="Village"
-                android:inputType="textPostalAddress"
-                android:textColor="@color/black"
-                android:textColorHint="@color/gray" />
-        </TableRow>
-
-        <TableRow>
-
-            <AutoCompleteTextView
-                android:id="@+id/client_union_dropdown"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
-                android:layout_weight="1"
-                android:autofillHints="postalAddress"
-                android:hint="Union"
-                android:inputType="textPostalAddress"
-                android:textColor="@color/black"
-                android:textColorHint="@color/gray" />
-
-            <EditText
-                android:id="@+id/client_extra"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
-                android:layout_weight="1"
-                android:autofillHints="name"
-                android:hint="Extra"
-                android:inputType="text"
-                android:textColor="@color/black"
-                android:textColorHint="@color/gray" />
-        </TableRow>
+        <EditText
+            android:id="@+id/client_extra"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_weight="1"
+            android:autofillHints="name"
+            android:hint="Extra"
+            android:inputType="text"
+            android:textColor="@color/black"
+            android:textColorHint="@color/gray" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -115,8 +83,8 @@
 
             <Button
                 android:id="@+id/client_save"
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="Save" />
         </LinearLayout>

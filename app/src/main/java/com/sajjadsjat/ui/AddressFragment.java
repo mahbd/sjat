@@ -1,6 +1,5 @@
 package com.sajjadsjat.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,8 +39,6 @@ public class AddressFragment extends Fragment {
             binding.etUnion.setText(address.getUnion());
         }
 
-        Toast.makeText(requireContext(), "Loaded adress " + addressId, Toast.LENGTH_SHORT).show();
-
         List<Address> addresseObjects = Address.getAll();
         List<String> addresses = new ArrayList<>();
         Map<String, Long> addressMap = new HashMap<>();
@@ -63,7 +60,6 @@ public class AddressFragment extends Fragment {
                     AddressFragment addressFragment = new AddressFragment();
                     Bundle bundle = new Bundle();
                     bundle.putLong("address", addressId1);
-                    Toast.makeText(requireContext(), "Putting id " + addressId1, Toast.LENGTH_SHORT).show();
                     addressFragment.setArguments(bundle);
                     requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_content_main, addressFragment).commit();
                 } else if (item.getItemId() == R.id.action_delete) {

@@ -8,12 +8,20 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
+import com.sajjadsjat.R;
 import com.sajjadsjat.databinding.FragmentClientFormBinding;
+import com.sajjadsjat.model.Address;
+import com.sajjadsjat.model.Client;
 import com.sajjadsjat.utils.SimpleSearchableDropdown;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ClientFormFragment extends Fragment {
     private FragmentClientFormBinding binding;
@@ -23,18 +31,24 @@ public class ClientFormFragment extends Fragment {
 
         binding = FragmentClientFormBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        List<String> paras = Arrays.asList("Abdullahpur", "Bhurungamari", "Chilmari", "Kurigram Sadar", "Nageshwari", "Phulbari", "Rajarhat", "Raomari", "Rowmari", "Ulipur");
-        new SimpleSearchableDropdown(requireContext(), binding.clientParaDropdown, (s) -> s).showDropdown(paras);
-        new SimpleSearchableDropdown(requireContext(), binding.clientVillageDropdown, (s) -> s).showDropdown(paras);
-        new SimpleSearchableDropdown(requireContext(), binding.clientUnionDropdown, (s) -> s).showDropdown(paras);
+
+        List<Address> addresseObjects = Address.getAll();
+        List<String> addresses = new ArrayList<>();
+        Map<String, Address> addressMap = new HashMap<>();
+        for (Address a : addresseObjects) {
+            String addressString = String.format("%s --> %s --> %s", a.getPara(), a.getVillage(), a.getUnion());
+            addresses.add(addressString);
+            addressMap.put(addressString, a);
+        }
+
+        new SimpleSearchableDropdown(requireContext(), binding.clientAddressDropdown, s -> s)
+                .showDropdown(addresses);
 
         binding.clientSave.setOnClickListener(v -> {
             String name = binding.clientName.getText().toString();
             String fathersName = binding.clientFathersName.getText().toString();
             String phone = binding.clientPhone.getText().toString();
-            String para = binding.clientParaDropdown.getText().toString();
-            String village = binding.clientVillageDropdown.getText().toString();
-            String union = binding.clientUnionDropdown.getText().toString();
+            String address = binding.clientAddressDropdown.getText().toString();
             String extra = binding.clientExtra.getText().toString();
 
             if (name.isEmpty()) {
@@ -42,28 +56,25 @@ public class ClientFormFragment extends Fragment {
                 return;
             }
             binding.clientName.setError(null);
-            if (phone.isEmpty()) {
-                binding.clientPhone.setError("Phone is required");
+            if (Client.validatePhone(phone) != null) {
+                binding.clientPhone.setError(Client.validatePhone(phone));
                 return;
             }
             binding.clientPhone.setError(null);
-            if (para.isEmpty()) {
-                binding.clientParaDropdown.setError("Para is required");
+            if (address.isEmpty()) {
+                binding.clientAddressDropdown.setError("Address is required");
                 return;
             }
-            binding.clientParaDropdown.setError(null);
-            if (village.isEmpty()) {
-                binding.clientVillageDropdown.setError("Village is required");
+            binding.clientAddressDropdown.setError(null);
+            if (addresses.stream().noneMatch(address::equals)) {
+                binding.clientAddressDropdown.setError("Address is not valid");
                 return;
             }
-            binding.clientVillageDropdown.setError(null);
-            if (union.isEmpty()) {
-                binding.clientUnionDropdown.setError("Union is required");
-                return;
-            }
-            binding.clientUnionDropdown.setError(null);
+            binding.clientAddressDropdown.setError(null);
+            new Client(name, fathersName, phone, addressMap.get(address), extra);
             Toast.makeText(requireContext(), "Client Saved", Toast.LENGTH_SHORT).show();
-
+            NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
+            navController.navigate(R.id.nav_clients);
         });
         return root;
     }
