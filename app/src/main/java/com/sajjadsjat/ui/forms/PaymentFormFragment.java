@@ -1,7 +1,5 @@
 package com.sajjadsjat.ui.forms;
 
-import static java.lang.String.format;
-
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
@@ -17,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import com.sajjadsjat.R;
 import com.sajjadsjat.databinding.FragmentPaymentFormBinding;
 import com.sajjadsjat.model.Client;
+import com.sajjadsjat.model.Payment;
 import com.sajjadsjat.utils.H;
 import com.sajjadsjat.utils.SimpleSearchableDropdown;
 
@@ -50,9 +49,8 @@ public class PaymentFormFragment extends Fragment {
             names.add(name);
             namesMap.put(name, client);
         }
-
-        List<String> employees = Arrays.asList(getResources().getStringArray(R.array.arrays_employees));
         new SimpleSearchableDropdown(requireContext(), binding.paymentNameDropdown, (s) -> s).showDropdown(names);
+
         ArrayAdapter<CharSequence> receiverAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.arrays_employees, android.R.layout.simple_spinner_item);
         binding.paymentReceiverDropdown.setAdapter(receiverAdapter);
         ArrayAdapter<CharSequence> methodAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.arrays_pay_methods, android.R.layout.simple_spinner_item);
@@ -73,7 +71,7 @@ public class PaymentFormFragment extends Fragment {
             datePickerDialog.show();
         });
 
-        binding.paymentTimestamp2.setText(String.format("%s",now.getHour() * 60 + now.getMinute()));
+        binding.paymentTimestamp2.setText(String.format("%s", now.getHour() * 60 + now.getMinute()));
         binding.paymentTimestamp2.setOnClickListener(v -> {
             int hour = now.getHour() % 12;
             if (hour == 0) hour = 12;
@@ -93,7 +91,7 @@ public class PaymentFormFragment extends Fragment {
             String receiver = binding.paymentReceiverDropdown.getSelectedItem().toString();
             long timestamp1 = H.stringToNumber(binding.paymentTimestamp1.getText().toString());
             long timestamp2 = H.stringToNumber(binding.paymentTimestamp2.getText().toString());
-            long timestamp = timestamp1 + timestamp2;
+            long createdAt = timestamp1 + timestamp2;
             String method = binding.paymentMethodDropdown.getSelectedItem().toString();
 
             if (name.isEmpty() || names.stream().noneMatch(name::equals)) {
@@ -106,7 +104,9 @@ public class PaymentFormFragment extends Fragment {
                 return;
             }
             binding.paymentAmount.setError(null);
-            Toast.makeText(requireContext(), "Payment Saved by " + receiver, Toast.LENGTH_SHORT).show();
+            new Payment(amount, namesMap.get(name), createdAt, false, method, receiver);
+            Toast.makeText(requireContext(), "Payment Saved", Toast.LENGTH_SHORT).show();
+            requireActivity().onBackPressed();
         });
 
         return root;

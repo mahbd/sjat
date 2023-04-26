@@ -22,6 +22,7 @@ import com.sajjadsjat.databinding.FragmentHomeBinding;
 import com.sajjadsjat.model.Address;
 import com.sajjadsjat.model.Client;
 import com.sajjadsjat.model.ClientRecord;
+import com.sajjadsjat.model.Payment;
 import com.sajjadsjat.model.Record;
 import com.sajjadsjat.utils.SimpleSearchableDropdown;
 
@@ -48,13 +49,18 @@ public class HomeFragment extends Fragment {
         HashMap<Long, List<ClientRecord>> childItems = new HashMap<>();
         for (Client client : clients) {
             List<ClientRecord> clientRecords = new ArrayList<>();
+            List<Payment> payments = Payment.getByClient(client);
+            if (payments != null) {
+                for (Payment payment : payments) {
+                    clientRecords.add(new ClientRecord(payment));
+                }
+            }
             List<Record> records = Record.getByClient(client);
             if (records != null) {
                 for (Record record : records) {
                     clientRecords.add(new ClientRecord(record));
                 }
             }
-            Toast.makeText(requireContext(), "Total records: " + clientRecords.size(), Toast.LENGTH_SHORT).show();
             childItems.put(client.getId(), clientRecords);
         }
 

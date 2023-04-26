@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.sajjadsjat.R;
 import com.sajjadsjat.model.Client;
 import com.sajjadsjat.model.ClientRecord;
+import com.sajjadsjat.model.Payment;
 import com.sajjadsjat.model.Record;
 
 import java.util.Arrays;
@@ -94,11 +95,9 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
         ClientRecord clientRecord = Objects.requireNonNull(userRecords.get(client.getId())).get(childPosition);
         if (clientRecord.record != null) {
             Record record = clientRecord.record;
-            String dateTime = record.getDateTime();
-            String item = record.getItem();
             double price = record.getUnitPrice() * record.getQuantity() - record.getDiscount();
 
-            childTextView.setText(String.format(Locale.getDefault(), "%s  %s    %.0fTk", dateTime, item, price));
+            childTextView.setText(String.format(Locale.getDefault(), "%s  %s    %.0fTk", record.getDateTime(), record.getItem(), price));
             TextView recordDetailQuantity = convertView.findViewById(R.id.record_detail_quantity);
             recordDetailQuantity.setText(String.format(Locale.getDefault(), "%.2f %s", record.getQuantity(), record.getUnit()));
             TextView recordDetailItem = convertView.findViewById(R.id.record_detail_item);
@@ -122,7 +121,8 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
             });
             return convertView;
         } else if (clientRecord.payment != null) {
-            childTextView.setText("This is payment");
+            Payment payment = clientRecord.payment;
+            childTextView.setText(String.format(Locale.getDefault(), "%s     %.0fTk", payment.getDateTime(), payment.getAmount()));
             return convertView;
         } else {
             childTextView.setText("No record found");

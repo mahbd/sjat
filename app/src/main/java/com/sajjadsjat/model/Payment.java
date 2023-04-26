@@ -2,6 +2,7 @@ package com.sajjadsjat.model;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
@@ -21,15 +22,33 @@ public class Payment extends RealmObject {
         return id;
     }
 
+    public double getAmount() {
+        return amount;
+    }
+
+    public String getDateTime() {
+        LocalDateTime dateTime = LocalDateTime.ofEpochSecond(this.createdAt / 1000, 0, ZoneOffset.UTC);
+        String month = dateTime.getMonthValue() < 10 ? "0" + dateTime.getMonthValue() : "" + dateTime.getMonthValue();
+        String day = dateTime.getDayOfMonth() < 10 ? "0" + dateTime.getDayOfMonth() : "" + dateTime.getDayOfMonth();
+        int full_hour = dateTime.getHour();
+        if (full_hour > 12) {
+            full_hour -= 12;
+        }
+        String hour = full_hour < 10 ? "0" + full_hour : "" + full_hour;
+        String minute = dateTime.getMinute() < 10 ? "0" + dateTime.getMinute() : "" + dateTime.getMinute();
+        return month + "-" + day + " " + hour + ":" + minute + " " + (dateTime.getHour() < 12 ? "am" : "pm");
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
     public Payment() {
     }
 
-    public Payment(double amount, Client client, LocalDateTime createdAt, boolean isDiscount, String payMethod, String receiver) {
-        Realm realm = Realm.getDefaultInstance();
-        Number maxId = realm.where(Payment.class).max("id");
-        this.id = maxId == null ? 1 : maxId.longValue() + 1;
+    public Payment(double amount, Client client, long createdAt, boolean isDiscount, String payMethod, String receiver) {
         this.amount = amount;
-        this.createdAt = createdAt.toInstant(ZoneOffset.UTC).toEpochMilli();
+        this.createdAt = createdAt;
         if (client == null) {
             throw new IllegalArgumentException("Client cannot be null");
         }
@@ -43,19 +62,21 @@ public class Payment extends RealmObject {
             throw new IllegalArgumentException("Receiver cannot be null");
         }
         this.receiver = receiver;
-        this.save();
-    }
-
-    private void save() {
-        Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
-        realm.copyToRealmOrUpdate(this);
-        realm.commitTransaction();
+        Realm.getDefaultInstance().executeTransaction(realm -> {
+            Number maxId = realm.where(Payment.class).max("id");
+            this.id = maxId == null ? 1 : maxId.longValue() + 1;
+            realm.copyToRealmOrUpdate(this);
+        });
     }
 
     public static Payment get(long id) {
         Realm realm = Realm.getDefaultInstance();
         return realm.where(Payment.class).equalTo("id", id).findFirst();
+    }
+
+    public static List<Payment> getByClient(Client client) {
+        Realm realm = Realm.getDefaultInstance();
+        return realm.where(Payment.class).equalTo("client.id", client.getId()).findAll();
     }
 
     public static void delete(long id) {
@@ -67,5 +88,4 @@ public class Payment extends RealmObject {
         }
         realm.commitTransaction();
     }
-
 }
