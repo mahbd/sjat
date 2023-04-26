@@ -79,7 +79,7 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
         }
         TextView groupTextView = convertView.findViewById(R.id.short_user);
         Client client = clients.get(groupPosition);
-        groupTextView.setText(String.format(Locale.getDefault(), "%s (%s)", client.getName(), client.getPara()));
+        groupTextView.setText(String.format(Locale.getDefault(), "%s (%s)", client.getName(), client.getAddress().getPara()));
         return convertView;
     }
 
@@ -148,7 +148,7 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
     private void applyFilters() {
         Object[] filtered = originalClients.stream()
                 .filter(client -> client.getName().toLowerCase().contains(nameFilter.toLowerCase()))
-                .filter(client -> client.getPara().toLowerCase().contains(paraFilter.toLowerCase()))
+                .filter(client -> client.getAddress().getPara().toLowerCase().contains(paraFilter.toLowerCase()))
                 .toArray();
         clients = Arrays.asList(Arrays.copyOf(filtered, filtered.length, Client[].class));
         this.notifyDataSetChanged();

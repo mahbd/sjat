@@ -19,9 +19,7 @@ public class Client extends RealmObject {
     @Nullable
     private String fathersName;
     private String phone;
-    private String union;
-    private String village;
-    private String para;
+    private Address address;
     @Nullable
     private String extraIdentifier;
     @LinkingObjects("client")
@@ -62,30 +60,15 @@ public class Client extends RealmObject {
         this.save();
     }
 
-    public String getUnion() {
-        return union;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setUnion(String union) {
-        this.union = union;
-        this.save();
-    }
-
-    public String getVillage() {
-        return village;
-    }
-
-    public void setVillage(String village) {
-        this.village = village;
-        this.save();
-    }
-
-    public String getPara() {
-        return para;
-    }
-
-    public void setPara(String para) {
-        this.para = para;
+    public void setAddress(Address address) {
+        if (this.address == null) {
+            throw new RuntimeException("Address is null");
+        }
+        this.address = address;
         this.save();
     }
 
@@ -107,7 +90,7 @@ public class Client extends RealmObject {
         this.payments = null;
     }
 
-    public Client(String name, @androidx.annotation.Nullable String fathersName, String phone, String union, String village, String para, @androidx.annotation.Nullable String extraIdentifier) {
+    public Client(String name, @androidx.annotation.Nullable String fathersName, String phone, Address address, @androidx.annotation.Nullable String extraIdentifier) {
         Realm realm = Realm.getDefaultInstance();
         Number maxId = realm.where(Client.class).max("id");
         this.id = maxId == null ? 1 : maxId.intValue() + 1;
@@ -120,12 +103,10 @@ public class Client extends RealmObject {
             throw new RuntimeException(validatePhone(phone));
         }
         this.phone = phone;
-        this.union = union;
-        this.village = village;
-        if (validateNameParaExtra(name, para, extraIdentifier) != null) {
-            throw new RuntimeException(validateNameParaExtra(name, para, extraIdentifier));
+        if (address == null) {
+            throw new RuntimeException("Address is null");
         }
-        this.para = para;
+        this.address = address;
         this.extraIdentifier = extraIdentifier;
         this.records = null;
         this.payments = null;
@@ -168,32 +149,12 @@ public class Client extends RealmObject {
         return null;
     }
 
-    static String validateNameParaExtra(@androidx.annotation.Nullable String name, @androidx.annotation.Nullable String para, @androidx.annotation.Nullable String extraIdentifier) {
-        if (name == null) {
-            return "Name cannot be null";
-        }
-        if (para == null) {
-            return "Para cannot be null";
-        }
-        if (extraIdentifier == null) {
-            return "Extra identifier cannot be null";
-        }
-        RealmResults<Client> clients = Realm.getDefaultInstance().where(Client.class).equalTo("name", name).equalTo("para", para).equalTo("extraIdentifier", extraIdentifier).findAll();
-        if (clients.size() > 0) {
-            return "Client with same name, para and extra identifier already exists";
-        }
-        return null;
-    }
-
     void validate() {
         if (validateNameFatherName(name, fathersName) != null) {
             throw new RuntimeException(validateNameFatherName(name, fathersName));
         }
         if (validatePhone(phone) != null) {
             throw new RuntimeException(validatePhone(phone));
-        }
-        if (validateNameParaExtra(name, para, extraIdentifier) != null) {
-            throw new RuntimeException(validateNameParaExtra(name, para, extraIdentifier));
         }
     }
 

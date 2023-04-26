@@ -45,9 +45,9 @@ public class PaymentFormFragment extends Fragment {
             clientMap.put(client.getName(), client);
             assert client.getExtraIdentifier() != null;
             if (!client.getExtraIdentifier().isEmpty()) {
-                names.add(String.format("%s %s %s", client.getName(), client.getPara(), client.getExtraIdentifier()));
+                names.add(String.format("%s %s %s", client.getName(), client.getAddress().getPara(), client.getExtraIdentifier()));
             } else {
-                names.add(String.format("%s %s", client.getName(), client.getPara()));
+                names.add(String.format("%s %s", client.getName(), client.getAddress().getPara()));
             }
         }
 

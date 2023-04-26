@@ -83,7 +83,7 @@ public class HomeFragment extends Fragment {
         Set<String> paras = new HashSet<>();
         paras.add("");
         for (Client client : clients) {
-            paras.add(client.getPara());
+            paras.add(client.getAddress().getPara());
         }
 
         new SimpleSearchableDropdown(this.getContext(), paraDropdown, (s) -> {
