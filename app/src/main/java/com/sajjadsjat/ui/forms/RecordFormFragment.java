@@ -30,6 +30,7 @@ import androidx.navigation.Navigation;
 import com.sajjadsjat.R;
 import com.sajjadsjat.databinding.FragmentRecordFormBinding;
 import com.sajjadsjat.model.Client;
+import com.sajjadsjat.model.Employee;
 import com.sajjadsjat.model.Price;
 import com.sajjadsjat.model.Record;
 import com.sajjadsjat.utils.H;
@@ -84,6 +85,10 @@ public class RecordFormFragment extends Fragment {
         for (Price price : uniqueUnitPrices) {
             units.add(price.getUnit());
         }
+        List<String> employees = new ArrayList<>();
+        for (Employee employee : Employee.getAll()) {
+            employees.add(employee.getName());
+        }
 
         ArrayAdapter<String> itemAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, items);
         binding.recordItemDropdown.setAdapter(itemAdapter);
@@ -91,7 +96,7 @@ public class RecordFormFragment extends Fragment {
         ArrayAdapter<String> unitAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, units);
         binding.recordUnitDropdown.setAdapter(unitAdapter);
 
-        ArrayAdapter<CharSequence> sellerAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.arrays_employees, android.R.layout.simple_spinner_item);
+        ArrayAdapter<String> sellerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, employees);
         binding.recordSellerDropdown.setAdapter(sellerAdapter);
 
         LocalDateTime now = LocalDateTime.now();
