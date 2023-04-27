@@ -115,7 +115,7 @@
 
         <TextView
             android:id="@+id/record_discount"
-            android:text="Discount: 100Tk"
+            android:text="Discount: 0Tk"
             android:visibility="gone"
             android:textAlignment="center"
             android:textColor="@color/dark_green"

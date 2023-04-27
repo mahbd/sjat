@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +30,7 @@ import androidx.navigation.Navigation;
 import com.sajjadsjat.R;
 import com.sajjadsjat.databinding.FragmentRecordFormBinding;
 import com.sajjadsjat.model.Client;
+import com.sajjadsjat.model.Price;
 import com.sajjadsjat.model.Record;
 import com.sajjadsjat.utils.H;
 import com.sajjadsjat.utils.SimpleSearchableDropdown;
@@ -39,7 +42,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
+
 public class RecordFormFragment extends Fragment {
+    Realm realm = Realm.getDefaultInstance();
 
     private FragmentRecordFormBinding binding;
     private final String ITEM_PAYMENT = "Payment";
@@ -65,10 +72,23 @@ public class RecordFormFragment extends Fragment {
         }
         new SimpleSearchableDropdown(requireContext(), binding.recordNameDropdown, (s) -> s).showDropdown(names);
 
-        ArrayAdapter<CharSequence> itemAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.arrays_items, android.R.layout.simple_spinner_item);
+        RealmResults<Price> uniqueItemPrices = realm.where(Price.class).distinct("item").findAll();
+        List<String> items = new ArrayList<>();
+        for (Price price : uniqueItemPrices) {
+            items.add(price.getItem());
+        }
+        if (items.size() > 1) items.add(1, ITEM_PAYMENT);
+        else items.add(ITEM_PAYMENT);
+        RealmResults<Price> uniqueUnitPrices = realm.where(Price.class).distinct("unit").findAll();
+        List<String> units = new ArrayList<>();
+        for (Price price : uniqueUnitPrices) {
+            units.add(price.getUnit());
+        }
+
+        ArrayAdapter<String> itemAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, items);
         binding.recordItemDropdown.setAdapter(itemAdapter);
 
-        ArrayAdapter<CharSequence> unitAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.arrays_units, android.R.layout.simple_spinner_item);
+        ArrayAdapter<String> unitAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, units);
         binding.recordUnitDropdown.setAdapter(unitAdapter);
 
         ArrayAdapter<CharSequence> sellerAdapter = ArrayAdapter.createFromResource(requireContext(), R.array.arrays_employees, android.R.layout.simple_spinner_item);
@@ -123,6 +143,86 @@ public class RecordFormFragment extends Fragment {
             }
         });
 
+        binding.recordItemDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                double price = calculatePrice();
+                if (price != 0) {
+                    binding.recordPrice.setText(String.format(Locale.getDefault(), "%.2f", price));
+                    binding.recordDiscount.setVisibility(View.GONE);
+                }
+                RealmResults<Price> uui = realm.where(Price.class).equalTo("item", binding.recordItemDropdown.getSelectedItem().toString()).distinct("unit").findAll();
+                List<String> units = new ArrayList<>();
+                if (uui.size() > 0) {
+                    for (Price p : uui) {
+                        units.add(p.getUnit());
+                    }
+                    unitAdapter.clear();
+                    unitAdapter.addAll(units);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        binding.recordQuantity.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                double price = calculatePrice();
+                if (price != 0) {
+                    binding.recordPrice.setText(String.format(Locale.getDefault(), "%.2f", price));
+                    binding.recordDiscount.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        binding.recordUnitDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                double price = calculatePrice();
+                if (price != 0) {
+                    binding.recordPrice.setText(String.format(Locale.getDefault(), "%.2f", price));
+                    binding.recordDiscount.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        binding.recordPrice.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                double enteredPrice = H.stringToDouble(binding.recordPrice.getText().toString());
+                double price = calculatePrice();
+                if (price != enteredPrice) {
+                    binding.recordDiscount.setText(String.format(Locale.getDefault(), "Discount: %.2f", price - enteredPrice));
+                    binding.recordDiscount.setVisibility(View.VISIBLE);
+                } else {
+                    binding.recordDiscount.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
         binding.recordSave.setOnClickListener(v -> {
             String name = binding.recordNameDropdown.getText().toString();
             String item = binding.recordItemDropdown.getSelectedItem().toString();
@@ -154,7 +254,16 @@ public class RecordFormFragment extends Fragment {
             if (item.equals(ITEM_PAYMENT)) {
                 record = new Record(namesMap.get(name), createdAt, price, item, 0, seller, "TK", 0);
             } else {
-                record = new Record(namesMap.get(name), createdAt, 0.0, item, quantity, seller, unit, price / quantity);
+                double unitPrice, discount;
+                Price priceObj = realm.where(Price.class).equalTo("item", item).equalTo("unit", unit).findFirst();
+                if (priceObj == null) {
+                    unitPrice = price / quantity;
+                    discount = 0;
+                } else {
+                    unitPrice = priceObj.getPrice();
+                    discount = unitPrice * quantity - price;
+                }
+                record = new Record(namesMap.get(name), createdAt, discount, item, quantity, seller, unit, unitPrice);
             }
             showSendSmsPop(record);
 
@@ -197,6 +306,17 @@ public class RecordFormFragment extends Fragment {
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private double calculatePrice() {
+        String item = binding.recordItemDropdown.getSelectedItem().toString();
+        double quantity = H.stringToDouble(binding.recordQuantity.getText().toString());
+        String unit = binding.recordUnitDropdown.getSelectedItem().toString();
+        Price priceObj = realm.where(Price.class).equalTo("item", item).equalTo("unit", unit).findFirst();
+        if (priceObj != null) {
+            return priceObj.getPrice() * quantity;
+        }
+        return 0;
     }
 
 }
