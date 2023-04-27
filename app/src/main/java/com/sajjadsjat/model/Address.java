@@ -1,5 +1,7 @@
 package com.sajjadsjat.model;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
 
 import io.realm.Realm;
@@ -52,6 +54,7 @@ public class Address extends RealmObject {
         realm.commitTransaction();
     }
 
+    @NonNull
     public String toString() {
         return para + ", " + village + ", " + union;
     }

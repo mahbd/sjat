@@ -50,9 +50,8 @@ public class ClientFormFragment extends Fragment {
         List<String> addresses = new ArrayList<>();
         Map<String, Address> addressMap = new HashMap<>();
         for (Address a : addresseObjects) {
-            String addressString = String.format("%s --> %s --> %s", a.getPara(), a.getVillage(), a.getUnion());
-            addresses.add(addressString);
-            addressMap.put(addressString, a);
+            addresses.add(a.toString());
+            addressMap.put(a.toString(), a);
         }
 
         new SimpleSearchableDropdown(requireContext(), binding.clientAddressDropdown, s -> s)

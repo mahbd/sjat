@@ -103,6 +103,9 @@ public class Client extends RealmObject {
 
     public void setFathersName(@Nullable String fathersName) {
         fathersName = formatName(fathersName);
+        if (this.fathersName != null && this.fathersName.equals(fathersName)) {
+            return;
+        }
         if (validateNameFatherName(name, fathersName) != null) {
             throw new RuntimeException(validateNameFatherName(name, fathersName));
         }
@@ -121,6 +124,9 @@ public class Client extends RealmObject {
 
     public void setName(String name) {
         name = formatName(name);
+        if (this.name != null && this.name.equals(name)) {
+            return;
+        }
         if (validateNameFatherName(name, fathersName) != null) {
             throw new RuntimeException(validateNameFatherName(name, fathersName));
         }
