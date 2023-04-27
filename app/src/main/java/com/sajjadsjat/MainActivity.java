@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (item.getItemId() == R.id.action_pay_methods) {
             navController.navigate(R.id.nav_pay_methods);
         } else if (item.getItemId() == R.id.action_units) {
-            navController.navigate(R.id.nav_units);
+            navController.navigate(R.id.nav_prices);
         } else if (item.getItemId() == R.id.action_backup_restore) {
             Intent intent = new Intent(this, BackupActivity.class);
             startActivity(intent);

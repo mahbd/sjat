@@ -66,8 +66,8 @@
         tools:layout="@layout/fragment_employees" />
 
     <fragment
-        android:id="@+id/nav_units"
-        android:name="com.sajjadsjat.ui.UnitsFragment"
-        android:label="@string/action_units"
-        tools:layout="@layout/fragment_employees" />
+        android:id="@+id/nav_prices"
+        android:name="com.sajjadsjat.ui.forms.PriceFormFragment"
+        android:label="@string/action_prices_form"
+        tools:layout="@layout/fragment_price_form" />
 </navigation>

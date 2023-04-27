@@ -1,6 +1,5 @@
 package com.sajjadsjat.utils;
 
-import android.app.AlertDialog;
 import android.content.Context;
 
 import com.sajjadsjat.model.Client;

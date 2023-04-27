@@ -42,11 +42,10 @@ public class AddressFragment extends Fragment {
             binding.btnSaveAddress.setText("Update Address");
         }
 
-        List<Address> addresseObjects = Address.getAll();
         List<String> addresses = new ArrayList<>();
         Map<String, Long> addressMap = new HashMap<>();
-        for (Address a : addresseObjects) {
-            String addressString = String.format("%s --> %s --> %s", a.getPara(), a.getVillage(), a.getUnion());
+        for (Address a : Address.getAll()) {
+            String addressString = a.toString();
             addresses.add(addressString);
             addressMap.put(addressString, a.getId());
         }
@@ -107,8 +106,8 @@ public class AddressFragment extends Fragment {
                 binding.etPara.setText("");
                 binding.etVillage.setText("");
                 binding.etUnion.setText("");
-                addresses.add(String.format("%s --> %s --> %s", newAddress.getPara(), newAddress.getVillage(), newAddress.getUnion()));
-                addressMap.put(String.format("%s --> %s --> %s", newAddress.getPara(), newAddress.getVillage(), newAddress.getUnion()), newAddress.getId());
+                addresses.add(newAddress.toString());
+                addressMap.put(newAddress.toString(), newAddress.getId());
                 adapter.notifyDataSetChanged();
             } else {
                 address.setPara(para);
@@ -116,8 +115,10 @@ public class AddressFragment extends Fragment {
                 address.setUnion(union);
                 Toast.makeText(requireContext(), "Address Updated", Toast.LENGTH_SHORT).show();
                 addresses.clear();
+                addressMap.clear();
                 for (Address a : Address.getAll()) {
-                    addresses.add(String.format("%s --> %s --> %s", a.getPara(), a.getVillage(), a.getUnion()));
+                    addresses.add(a.toString());
+                    addressMap.put(a.toString(), a.getId());
                 }
                 adapter.notifyDataSetChanged();
             }
