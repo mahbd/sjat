@@ -185,14 +185,13 @@ public class RecordFormFragment extends Fragment {
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                H.sendMessage(requireContext(), record.getClient());
                 dialog.dismiss();
             }
         });
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                H.sendMessage(record.getClient());
-                Toast.makeText(requireContext(), "Sending message...", Toast.LENGTH_SHORT).show();
                 dialog.dismiss();
             }
         });
