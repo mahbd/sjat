@@ -1,13 +1,23 @@
 package com.sajjadsjat.ui.forms;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.PopupWindow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,6 +36,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class RecordFormFragment extends Fragment {
@@ -139,12 +150,14 @@ public class RecordFormFragment extends Fragment {
             }
             binding.recordPrice.setError(null);
 
+            Record record;
             if (item.equals(ITEM_PAYMENT)) {
-                new Record(namesMap.get(name), createdAt, price, item, 0, seller, "TK", 0);
+                record = new Record(namesMap.get(name), createdAt, price, item, 0, seller, "TK", 0);
             } else {
-                new Record(namesMap.get(name), createdAt, 0.0, item, quantity, seller, unit, price / quantity);
+                record = new Record(namesMap.get(name), createdAt, 0.0, item, quantity, seller, unit, price / quantity);
             }
-            Toast.makeText(requireContext(), "Record saved", Toast.LENGTH_SHORT).show();
+            showSendSmsPop(record);
+
             NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.nav_home);
         });
@@ -155,6 +168,36 @@ public class RecordFormFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    private void showSendSmsPop(Record record) {
+        String name = record.getClient().getName();
+        String item = record.getItem();
+        String message;
+        if (item.equals(ITEM_PAYMENT)) {
+            message = String.format(Locale.getDefault(), "Send message to %s for payment of %.0f", name, record.getTotal());
+        } else {
+            message = String.format(Locale.getDefault(), "Send message to %s for buying %f %s with price %.0f", name, record.getQuantity(), record.getUnit(), record.getTotal());
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Send message");
+        builder.setMessage(message);
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                H.sendMessage(record.getClient());
+                Toast.makeText(requireContext(), "Sending message...", Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 }

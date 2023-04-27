@@ -93,7 +93,7 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
         if (record != null && !record.getItem().equals("Payment")) {
             double price = record.getUnitPrice() * record.getQuantity() - record.getDiscount();
 
-            childTextView.setText(String.format(Locale.getDefault(), "%s  %s    %.0fTk", record.getDateTime(), record.getItem(), price));
+            childTextView.setText(String.format(Locale.getDefault(), "%s  %s    %.0fTk", record.getDateTimeShort(), record.getItem(), price));
             TextView recordDetailQuantity = convertView.findViewById(R.id.record_detail_quantity);
             recordDetailQuantity.setText(String.format(Locale.getDefault(), "%.2f %s", record.getQuantity(), record.getUnit()));
             TextView recordDetailSeller = convertView.findViewById(R.id.record_detail_seller);
@@ -106,16 +106,13 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
             recordDetailFinalPrice.setText(String.format(Locale.getDefault(), "%.2f Tk", record.getUnitPrice() * record.getQuantity() - record.getDiscount()));
 
             View finalConvertView = convertView;
-            convertView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    TableLayout tableLayout = finalConvertView.findViewById(R.id.record_detail_table);
-                    tableLayout.setVisibility(tableLayout.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
-                }
+            convertView.setOnClickListener(v -> {
+                TableLayout tableLayout = finalConvertView.findViewById(R.id.record_detail_table);
+                tableLayout.setVisibility(tableLayout.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
             });
             return convertView;
         } else if (record != null && record.getItem().equals("Payment")) {
-            childTextView.setText(String.format(Locale.getDefault(), "%s     %.0fTk", record.getDateTime(), record.getDiscount()));
+            childTextView.setText(String.format(Locale.getDefault(), "%s     %.0fTk", record.getDateTimeShort(), record.getDiscount()));
             return convertView;
         } else {
             childTextView.setText("No record found");

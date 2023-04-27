@@ -24,6 +24,10 @@ public class Record extends RealmObject {
         return id;
     }
 
+    public Client getClient() {
+        return client;
+    }
+
     public long getCreatedAt() {
         return createdAt;
     }
@@ -39,6 +43,13 @@ public class Record extends RealmObject {
         String hour = full_hour < 10 ? "0" + full_hour : "" + full_hour;
         String minute = dateTime.getMinute() < 10 ? "0" + dateTime.getMinute() : "" + dateTime.getMinute();
         return month + "-" + day + " " + hour + ":" + minute + " " + (dateTime.getHour() < 12 ? "am" : "pm");
+    }
+
+    public String getDateTimeShort() {
+        LocalDateTime dateTime = LocalDateTime.ofEpochSecond(this.createdAt, 0, ZoneOffset.UTC);
+        String month = dateTime.getMonthValue() < 10 ? "0" + dateTime.getMonthValue() : "" + dateTime.getMonthValue();
+        String day = dateTime.getDayOfMonth() < 10 ? "0" + dateTime.getDayOfMonth() : "" + dateTime.getDayOfMonth();
+        return month + "-" + day;
     }
 
     public double getDiscount() {
