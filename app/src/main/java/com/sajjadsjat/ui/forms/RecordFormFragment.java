@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ import java.util.Map;
 public class RecordFormFragment extends Fragment {
 
     private FragmentRecordFormBinding binding;
+    private final String ITEM_PAYMENT = "Payment";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -90,6 +92,26 @@ public class RecordFormFragment extends Fragment {
             timePickerDialog.show();
         });
 
+        binding.recordItemDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String item = binding.recordItemDropdown.getSelectedItem().toString();
+                if (item.equals(ITEM_PAYMENT)) {
+                    binding.recordQuantity.setVisibility(View.GONE);
+                    binding.recordUnitDropdown.setVisibility(View.GONE);
+                    binding.recordPrice.setHint("Amount");
+                } else {
+                    binding.recordQuantity.setVisibility(View.VISIBLE);
+                    binding.recordUnitDropdown.setVisibility(View.VISIBLE);
+                    binding.recordPrice.setHint("Price");
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
         binding.recordSave.setOnClickListener(v -> {
             String name = binding.recordNameDropdown.getText().toString();
             String item = binding.recordItemDropdown.getSelectedItem().toString();
@@ -106,7 +128,7 @@ public class RecordFormFragment extends Fragment {
                 return;
             }
             binding.recordNameDropdown.setError(null);
-            if (quantity == 0) {
+            if (!item.equals(ITEM_PAYMENT) && quantity == 0) {
                 binding.recordQuantity.setError("Quantity is required");
                 return;
             }
@@ -116,7 +138,12 @@ public class RecordFormFragment extends Fragment {
                 return;
             }
             binding.recordPrice.setError(null);
-            new Record(namesMap.get(name), createdAt, 0.0, item, quantity, seller, unit, price / quantity);
+
+            if (item.equals(ITEM_PAYMENT)) {
+                new Record(namesMap.get(name), createdAt, price, item, 0, seller, "TK", 0);
+            } else {
+                new Record(namesMap.get(name), createdAt, 0.0, item, quantity, seller, unit, price / quantity);
+            }
             Toast.makeText(requireContext(), "Record saved", Toast.LENGTH_SHORT).show();
             NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
             navController.navigate(R.id.nav_home);

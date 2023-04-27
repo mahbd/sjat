@@ -1,5 +1,7 @@
 package com.sajjadsjat.ui;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -21,17 +22,19 @@ import com.sajjadsjat.adapter.ExpandableClientsAdapter;
 import com.sajjadsjat.databinding.FragmentHomeBinding;
 import com.sajjadsjat.model.Address;
 import com.sajjadsjat.model.Client;
-import com.sajjadsjat.model.ClientRecord;
-import com.sajjadsjat.model.Payment;
-import com.sajjadsjat.model.Record;
 import com.sajjadsjat.utils.SimpleSearchableDropdown;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
+
 public class HomeFragment extends Fragment {
+    private final Realm realm = Realm.getDefaultInstance();
+    SharedPreferences prefs;
+
 
     private FragmentHomeBinding binding;
 
@@ -39,47 +42,17 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        prefs = requireContext().getSharedPreferences("my_prefs", Context.MODE_PRIVATE);
+        int homeQueryLimit = prefs.getInt("home_query_limit", 20);
 
         EditText searchBox = binding.searchBox;
         AutoCompleteTextView paraDropdown = binding.paraDropdown;
 
         ExpandableListView expandableListView = binding.expandableListView;
-        List<Client> clients = Client.get(new HashMap<>());
-
-        HashMap<Long, List<ClientRecord>> childItems = new HashMap<>();
-        for (Client client : clients) {
-            List<ClientRecord> clientRecords = new ArrayList<>();
-            List<Payment> payments = Payment.getByClient(client);
-            if (payments != null) {
-                for (Payment payment : payments) {
-                    clientRecords.add(new ClientRecord(payment));
-                }
-            }
-            List<Record> records = Record.getByClient(client);
-            if (records != null) {
-                for (Record record : records) {
-                    clientRecords.add(new ClientRecord(record));
-                }
-            }
-            // sort by createdAt
-            clientRecords.sort((o1, o2) -> {
-                if (o1.payment != null && o2.payment != null) {
-                    return o1.payment.getCreatedAt() < o2.payment.getCreatedAt() ? 1 : -1;
-                } else if (o1.record != null && o2.record != null) {
-                    return o1.record.getCreatedAt() < o2.record.getCreatedAt() ? 1 : -1;
-                } else if (o1.payment != null && o2.record != null) {
-                    return o1.payment.getCreatedAt() < o2.record.getCreatedAt() ? 1 : -1;
-                } else if (o1.record != null && o2.payment != null) {
-                    return o1.record.getCreatedAt() < o2.payment.getCreatedAt() ? 1 : -1;
-                } else {
-                    return 0;
-                }
-            });
-            childItems.put(client.getId(), clientRecords);
-        }
+        RealmResults<Client> clients = realm.where(Client.class).limit(homeQueryLimit).findAll();
 
 
-        ExpandableClientsAdapter adapter = new ExpandableClientsAdapter(this.getContext(), clients, childItems);
+        ExpandableClientsAdapter adapter = new ExpandableClientsAdapter(this.getContext(), clients, homeQueryLimit);
 
         expandableListView.setAdapter(adapter);
 

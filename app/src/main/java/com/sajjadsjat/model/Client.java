@@ -59,17 +59,6 @@ public class Client extends RealmObject {
     }
 
     public double getDue() {
-        Realm realm = Realm.getDefaultInstance();
-        List<Record> records = realm.where(Record.class).equalTo("client.id", id).findAll();
-        List<Payment> payments = realm.where(Payment.class).equalTo("client.id", id).findAll();
-        double due = 0;
-        for (Record record : records) {
-            due += record.getUnitPrice() * record.getQuantity();
-        }
-        for (Payment payment : payments) {
-            due -= payment.getAmount();
-        }
-        setDue(due);
         return due;
     }
 
@@ -248,7 +237,7 @@ public class Client extends RealmObject {
         return Realm.getDefaultInstance().where(Client.class).findAll();
     }
 
-    public static List<Client> getAll() {
+    public static RealmResults<Client> getAll() {
         return Realm.getDefaultInstance().where(Client.class).findAll().sort("due", Sort.DESCENDING);
     }
 

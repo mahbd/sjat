@@ -48,12 +48,17 @@ public class Record extends RealmObject {
     public String getItem() {
         return item;
     }
+
     public double getQuantity() {
         return quantity;
     }
 
     public String getSeller() {
         return seller;
+    }
+
+    public double getTotal() {
+        return this.quantity * this.unitPrice - this.discount;
     }
 
     public String getUnit() {
@@ -94,6 +99,7 @@ public class Record extends RealmObject {
             this.id = maxId == null ? 1 : maxId.longValue() + 1;
             realm.copyToRealmOrUpdate(this);
         });
+        this.client.setDue(this.client.getDue() + this.getTotal());
     }
 
     public static Record get(long id) {

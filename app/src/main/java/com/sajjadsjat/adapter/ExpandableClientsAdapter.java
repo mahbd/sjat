@@ -10,29 +10,26 @@ import android.widget.TextView;
 
 import com.sajjadsjat.R;
 import com.sajjadsjat.model.Client;
-import com.sajjadsjat.model.ClientRecord;
-import com.sajjadsjat.model.Payment;
 import com.sajjadsjat.model.Record;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
+
+import io.realm.Case;
+import io.realm.Realm;
 
 public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
+    private final Realm realm = Realm.getDefaultInstance();
     private String paraFilter = "";
     private String nameFilter = "";
     private final Context context;
     private List<Client> clients;
-    private final List<Client> originalClients;
-    private final HashMap<Long, List<ClientRecord>> userRecords;
+    private final int queryLimit;
 
-    public ExpandableClientsAdapter(Context context, List<Client> clients, HashMap<Long, List<ClientRecord>> userRecords) {
+    public ExpandableClientsAdapter(Context context, List<Client> clients, int queryLimit) {
         this.context = context;
         this.clients = clients;
-        this.originalClients = clients;
-        this.userRecords = userRecords;
+        this.queryLimit = queryLimit;
     }
 
     @Override
@@ -43,18 +40,18 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
     @Override
     public int getChildrenCount(int groupPosition) {
         Client group = clients.get(groupPosition);
-        return Objects.requireNonNull(userRecords.get(group.getId())).size();
+        return (int) realm.where(Record.class).equalTo("client.id", group.getId()).count();
     }
 
     @Override
-    public Object getGroup(int groupPosition) {
+    public Client getGroup(int groupPosition) {
         return clients.get(groupPosition);
     }
 
     @Override
-    public Object getChild(int groupPosition, int childPosition) {
+    public Record getChild(int groupPosition, int childPosition) {
         Client group = clients.get(groupPosition);
-        return Objects.requireNonNull(userRecords.get(group.getId())).get(childPosition);
+        return realm.where(Record.class).equalTo("client.id", group.getId()).findAll().get(childPosition);
     }
 
     @Override
@@ -91,10 +88,9 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
             convertView = inflater.inflate(R.layout.list_client_record, null);
         }
         TextView childTextView = convertView.findViewById(R.id.record_brief_text);
-        Client client = clients.get(groupPosition);
-        ClientRecord clientRecord = Objects.requireNonNull(userRecords.get(client.getId())).get(childPosition);
-        if (clientRecord.record != null) {
-            Record record = clientRecord.record;
+        Record record = getChild(groupPosition, childPosition);
+
+        if (record != null && !record.getItem().equals("Payment")) {
             double price = record.getUnitPrice() * record.getQuantity() - record.getDiscount();
 
             childTextView.setText(String.format(Locale.getDefault(), "%s  %s    %.0fTk", record.getDateTime(), record.getItem(), price));
@@ -118,9 +114,8 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
                 }
             });
             return convertView;
-        } else if (clientRecord.payment != null) {
-            Payment payment = clientRecord.payment;
-            childTextView.setText(String.format(Locale.getDefault(), "%s     %.0fTk", payment.getDateTime(), payment.getAmount()));
+        } else if (record != null && record.getItem().equals("Payment")) {
+            childTextView.setText(String.format(Locale.getDefault(), "%s     %.0fTk", record.getDateTime(), record.getDiscount()));
             return convertView;
         } else {
             childTextView.setText("No record found");
@@ -144,11 +139,8 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
     }
 
     private void applyFilters() {
-        Object[] filtered = originalClients.stream()
-                .filter(client -> client.getName().toLowerCase().contains(nameFilter.toLowerCase()))
-                .filter(client -> client.getAddress().getPara().toLowerCase().contains(paraFilter.toLowerCase()))
-                .toArray();
-        clients = Arrays.asList(Arrays.copyOf(filtered, filtered.length, Client[].class));
+        Realm realm = Realm.getDefaultInstance();
+        clients = realm.where(Client.class).contains("name", nameFilter, Case.INSENSITIVE).contains("address.para", paraFilter, Case.INSENSITIVE).limit(queryLimit).findAll();
         this.notifyDataSetChanged();
     }
 }

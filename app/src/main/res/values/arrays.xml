@@ -17,6 +17,7 @@
     </string-array>
     <string-array name="arrays_items">
         <item>Rod</item>
+        <item>Payment</item>
         <item>Bali</item>
         <item>Cement</item>
         <item>Chula</item>
