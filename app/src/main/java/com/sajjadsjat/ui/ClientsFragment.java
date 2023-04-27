@@ -1,5 +1,7 @@
 package com.sajjadsjat.ui;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -11,7 +13,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
@@ -20,25 +21,30 @@ import com.sajjadsjat.adapter.ClientsAdapter;
 import com.sajjadsjat.databinding.FragmentClientsBinding;
 import com.sajjadsjat.model.Address;
 import com.sajjadsjat.model.Client;
-import com.sajjadsjat.ui.forms.ClientFormFragment;
 import com.sajjadsjat.utils.SimpleSearchableDropdown;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
+
 public class ClientsFragment extends Fragment {
 
     private FragmentClientsBinding binding;
+    private SharedPreferences prefs;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentClientsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        prefs = requireContext().getSharedPreferences("my_prefs", Context.MODE_PRIVATE);
+        int searchNameQueryLimit = prefs.getInt("search_name_query_limit", 10);
 
-        List<Client> clients = Client.getAll();
-        ClientsAdapter adapter = new ClientsAdapter(requireContext(), R.layout.client_item, clients);
+        RealmResults<Client> clients = Realm.getDefaultInstance().where(Client.class).limit(searchNameQueryLimit).findAll();
+        ClientsAdapter adapter = new ClientsAdapter(requireContext(), R.layout.client_item, searchNameQueryLimit, clients);
         binding.clientList.setAdapter(adapter);
 
         List<String> paras = new ArrayList<>();
@@ -70,17 +76,13 @@ public class ClientsFragment extends Fragment {
             popupMenu.getMenuInflater().inflate(R.menu.long_popup, popupMenu.getMenu());
             popupMenu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == R.id.action_edit) {
-                    Client client = clients.get(position);
-                    ClientFormFragment addressFragment = new ClientFormFragment();
                     Bundle bundle = new Bundle();
-                    bundle.putLong("client", client.getId());
+                    bundle.putLong("client", id);
                     NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
                     navController.navigate(R.id.nav_client_form, bundle);
                 } else if (item.getItemId() == R.id.action_delete) {
-                    Client client = clients.get(position);
-                    Client.delete(client.getId());
+                    Client.delete(id);
                     Toast.makeText(requireContext(), "Address deleted", Toast.LENGTH_SHORT).show();
-                    clients.remove(position);
                     adapter.notifyDataSetChanged();
                 }
                 return true;

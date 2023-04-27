@@ -12,18 +12,23 @@ import androidx.annotation.Nullable;
 import com.sajjadsjat.model.Client;
 import com.sajjadsjat.R;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+
+import io.realm.Case;
+import io.realm.Realm;
+import io.realm.RealmResults;
 
 public class ClientsAdapter extends ArrayAdapter<Client> {
+    private final Realm realm = Realm.getDefaultInstance();
+    private final int queryLimit;
     private String paraFilter = "";
     private String nameFilter = "";
-    private final List<Client> originalClients;
-    private List<Client> clients;
+    private RealmResults<Client> clients;
 
-    public ClientsAdapter(@NonNull Context context, int resource, @NonNull List<Client> clients) {
+    public ClientsAdapter(@NonNull Context context, int resource, int queryLimit, RealmResults<Client> clients) {
         super(context, resource, clients);
-        originalClients = clients;
+        this.queryLimit = queryLimit;
         this.clients = clients;
     }
 
@@ -51,7 +56,7 @@ public class ClientsAdapter extends ArrayAdapter<Client> {
         holder.phoneView.setText(client.getPhone());
         holder.addressView.setText(client.getAddress().toString());
         holder.extraView.setText(client.getExtra());
-        holder.dueView.setText(String.valueOf(client.getDue()));
+        holder.dueView.setText(String.format(Locale.getDefault(), "%.2f", client.getDue()));
         return row;
     }
 
@@ -79,6 +84,12 @@ public class ClientsAdapter extends ArrayAdapter<Client> {
         return clients.get(position);
     }
 
+    @Override
+    public long getItemId(int position) {
+        assert clients.get(position) != null;
+        return clients.get(position).getId();
+    }
+
     public int getPosition(Client item) {
         return clients.indexOf(item);
     }
@@ -99,11 +110,7 @@ public class ClientsAdapter extends ArrayAdapter<Client> {
     }
 
     private void applyFilters() {
-        Object[] filtered = originalClients.stream()
-                .filter(client -> client.getName().toLowerCase().contains(nameFilter.toLowerCase()))
-                .filter(client -> client.getAddress().getPara().toLowerCase().contains(paraFilter.toLowerCase()))
-                .toArray();
-        clients = Arrays.asList(Arrays.copyOf(filtered, filtered.length, Client[].class));
+        clients = realm.where(Client.class).contains("name", nameFilter, Case.INSENSITIVE).contains("address.para", paraFilter, Case.INSENSITIVE).limit(queryLimit).findAll();
         this.notifyDataSetChanged();
     }
 }
