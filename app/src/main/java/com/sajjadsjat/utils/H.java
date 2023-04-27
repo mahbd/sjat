@@ -1,11 +1,8 @@
 package com.sajjadsjat.utils;
 
-import android.app.PendingIntent;
+import android.app.AlertDialog;
 import android.content.Context;
-import android.telephony.SmsManager;
-import android.widget.Toast;
 
-import com.sajjadsjat.MainActivity;
 import com.sajjadsjat.model.Client;
 import com.sajjadsjat.model.Record;
 
@@ -47,25 +44,27 @@ public class H {
         StringBuilder lastFewTransaction = new StringBuilder();
         RealmResults<Record> records = Realm.getDefaultInstance().where(Record.class).equalTo("client.id", client.getId()).sort("createdAt", Sort.DESCENDING).limit(3).findAll();
         if (records.size() > 0) {
-            lastFewTransaction = new StringBuilder("Last 3:\n");
+            lastFewTransaction = new StringBuilder("Last 3 transactions:\n");
             for (Record record : records) {
                 if (record.getItem().equals("Payment")) {
-                    lastFewTransaction.append(record.getDateTimeShort()).append(" ").append(record.getDiscount()).append(" taka\n");
+                    lastFewTransaction.append(record.getDateTimeShort()).append(" deposit ").append(record.getDiscount()).append("tk\n");
                 } else {
-                    lastFewTransaction.append(record.getDateTimeShort()).append(" ").append(record.getQuantity()).append(" ").append(record.getUnit()).append(" ").append(record.getItem()).append(" ").append(record.getTotal()).append(" taka\n");
+                    lastFewTransaction.append(record.getDateTimeShort()).append(" ").append(record.getQuantity()).append(" ").append(record.getUnit()).append(" ").append(record.getItem()).append(" ").append(record.getTotal()).append("tk\n");
                 }
             }
         }
         String message = "Dear " + client.getName() + ",\n" +
-                "Your due is " + client.getDue() + " taka.\n" +
                 lastFewTransaction +
-                "Thank you.";
+                "Your due is " + client.getDue() + "tk.\n" +
+                "-\nIbrahim Khalil";
         if (isPaid) {
-            // all due has been paid
             message = "Dear " + client.getName() + ",\n" +
                     "I am happy to inform you that all dues have been paid. Thank you for your cooperation.\n" +
                     "Best regards,\n" +
-                    "Md. Ibrahim Khalil";
+                    "Ibrahim Khalil";
+        }
+        if (message.length() > 160) {
+            message = message.substring(0, 160);
         }
         new SMSHandler().sendSMS(context, phoneNumber, message);
     }
