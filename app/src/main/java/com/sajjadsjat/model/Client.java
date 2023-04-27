@@ -144,6 +144,9 @@ public class Client extends RealmObject {
     }
 
     public void setPhone(String phone) {
+        if (this.phone != null && this.phone.equals(phone)) {
+            return;
+        }
         if (validatePhone(phone) != null) {
             throw new RuntimeException(validatePhone(phone));
         }

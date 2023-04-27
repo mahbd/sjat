@@ -12,16 +12,6 @@
         android:title="@string/action_employees"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_items"
-        android:orderInCategory="100"
-        android:title="@string/action_items"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_pay_methods"
-        android:orderInCategory="100"
-        android:title="@string/action_pay_methods"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/action_units"
         android:orderInCategory="100"
         android:title="@string/action_prices_form"

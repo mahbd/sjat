@@ -65,10 +65,6 @@ public class MainActivity extends AppCompatActivity {
             navController.navigate(R.id.nav_address);
         } else if (item.getItemId() == R.id.action_employees) {
             navController.navigate(R.id.nav_employees);
-        } else if (item.getItemId() == R.id.action_items) {
-            navController.navigate(R.id.nav_items);
-        } else if (item.getItemId() == R.id.action_pay_methods) {
-            navController.navigate(R.id.nav_pay_methods);
         } else if (item.getItemId() == R.id.action_units) {
             navController.navigate(R.id.nav_prices);
         } else if (item.getItemId() == R.id.action_backup_restore) {

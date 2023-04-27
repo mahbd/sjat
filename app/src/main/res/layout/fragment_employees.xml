@@ -7,7 +7,7 @@
     tools:context=".ui.EmployeesFragment">
 
     <EditText
-        android:id="@+id/et_employee"
+        android:id="@+id/et_employee_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:autofillHints=""
@@ -24,7 +24,17 @@
         android:hint="Job"
         android:inputType="text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_employee" />
+        app:layout_constraintTop_toBottomOf="@+id/et_employee_name" />
+
+    <EditText
+        android:id="@+id/et_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="Phone Number"
+        android:inputType="phone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_job" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -33,9 +43,10 @@
         android:layout_marginTop="12dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_job">
+        app:layout_constraintTop_toBottomOf="@+id/et_phone">
 
         <Button
+            android:id="@+id/btn_save_employee"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -43,6 +54,7 @@
     </LinearLayout>
 
     <ListView
+        android:id="@+id/lv_employees"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
