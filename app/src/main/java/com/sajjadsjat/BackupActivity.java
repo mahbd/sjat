@@ -61,15 +61,6 @@ public class BackupActivity extends AppCompatActivity {
             Toast.makeText(this, "Records generated", Toast.LENGTH_SHORT).show();
         });
 
-        binding.btnGeneratePayment.setOnClickListener(v -> {
-            binding.btnGeneratePayment.setEnabled(false);
-            for (int i = 0; i < 10000; i++) {
-                Generator.generateRandomPayment(this);
-            }
-            binding.btnGeneratePayment.setEnabled(true);
-            Toast.makeText(this, "Payments generated", Toast.LENGTH_SHORT).show();
-        });
-
         binding.btnClearDatabase.setOnClickListener(v -> {
             Realm realm = Realm.getDefaultInstance();
             realm.executeTransaction(r -> {

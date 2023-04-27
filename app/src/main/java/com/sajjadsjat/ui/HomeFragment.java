@@ -85,12 +85,6 @@ public class HomeFragment extends Fragment {
             navController.navigate(R.id.nav_record_form);
         });
 
-
-        binding.addPayment.setOnClickListener(view -> {
-            NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.nav_payment_form);
-        });
-
         return root;
     }
 

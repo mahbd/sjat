@@ -17,7 +17,6 @@
     <string name="menu_clients">Clients</string>
     <string name="menu_ovens">Ovens</string>
     <string name="menu_record_form">Record Form</string>
-    <string name="menu_payment_form">Payment Form</string>
     <string name="menu_client_form">Client Form</string>
     <string name="menu_oven_form">Oven Form</string>
     <!-- TODO: Remove or change this placeholder text -->

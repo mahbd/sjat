@@ -9,12 +9,6 @@
         <item>Dollar</item>
         <item>Other</item>
     </string-array>
-    <string-array name="arrays_pay_methods">
-        <item>Cash</item>
-        <item>Rocket</item>
-        <item>BKash</item>
-        <item>Other</item>
-    </string-array>
     <string-array name="arrays_items">
         <item>Rod</item>
         <item>Payment</item>

@@ -5,7 +5,6 @@ import android.content.Context;
 import com.sajjadsjat.R;
 import com.sajjadsjat.model.Address;
 import com.sajjadsjat.model.Client;
-import com.sajjadsjat.model.Payment;
 import com.sajjadsjat.model.Record;
 
 import java.time.LocalDateTime;
@@ -94,18 +93,6 @@ public class Generator {
         }
         int random = (int) (Math.random() * total);
         return clients.get(random);
-    }
-
-    public static Payment generateRandomPayment(Context context) {
-        double amount = generateRandomDouble(0, 100000);
-        Client client = getRandomClient();
-        LocalDateTime date = LocalDateTime.of(generateRandomInt(2020, 2023), generateRandomInt(1, 12), generateRandomInt(1, 28), generateRandomInt(0, 23), generateRandomInt(0, 59));
-        long createdAt = H.datetimeToTimestamp(date);
-        boolean isDue = generateRandomInt(0, 1) == 1;
-        String payMethod = "Cash";
-        String[] employees = context.getResources().getStringArray(R.array.arrays_employees);
-        String receiver = employees[generateRandomInt(0, employees.length - 1)];
-        return new Payment(amount, client, createdAt, isDue, payMethod, receiver);
     }
 
     public static Record generateRandomRecord(Context context) {
