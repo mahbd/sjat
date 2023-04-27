@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.sajjadsjat.databinding.ActivityBackupBinding;
+import com.sajjadsjat.utils.Generator;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,6 +33,50 @@ public class BackupActivity extends AppCompatActivity {
 
         binding.btnBackup.setOnClickListener(v -> backup());
         binding.btnRestore.setOnClickListener(v -> restore());
+
+        binding.btnGenerateAddress.setOnClickListener(v -> {
+            binding.btnGenerateAddress.setEnabled(false);
+            for (int i = 0; i < 100; i++) {
+                Generator.generateRandomAddress();
+            }
+            binding.btnGenerateAddress.setEnabled(true);
+            Toast.makeText(this, "Addresses generated", Toast.LENGTH_SHORT).show();
+        });
+
+        binding.btnGenerateClient.setOnClickListener(v -> {
+            binding.btnGenerateClient.setEnabled(false);
+            for (int i = 0; i < 1000; i++) {
+                Generator.generateRandomClient();
+            }
+            binding.btnGenerateClient.setEnabled(true);
+            Toast.makeText(this, "Clients generated", Toast.LENGTH_SHORT).show();
+        });
+
+        binding.btnGenerateRecord.setOnClickListener(v -> {
+            binding.btnGenerateRecord.setEnabled(false);
+            for (int i = 0; i < 10000; i++) {
+                Generator.generateRandomRecord(this);
+            }
+            binding.btnGenerateRecord.setEnabled(true);
+            Toast.makeText(this, "Records generated", Toast.LENGTH_SHORT).show();
+        });
+
+        binding.btnGeneratePayment.setOnClickListener(v -> {
+            binding.btnGeneratePayment.setEnabled(false);
+            for (int i = 0; i < 10000; i++) {
+                Generator.generateRandomPayment(this);
+            }
+            binding.btnGeneratePayment.setEnabled(true);
+            Toast.makeText(this, "Payments generated", Toast.LENGTH_SHORT).show();
+        });
+
+        binding.btnClearDatabase.setOnClickListener(v -> {
+            Realm realm = Realm.getDefaultInstance();
+            realm.executeTransaction(r -> {
+                r.deleteAll();
+            });
+            Toast.makeText(this, "Database cleared", Toast.LENGTH_SHORT).show();
+        });
     }
 
     private void backup() {

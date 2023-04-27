@@ -24,6 +24,10 @@ public class Record extends RealmObject {
         return id;
     }
 
+    public long getCreatedAt() {
+        return createdAt;
+    }
+
     public String getDateTime() {
         LocalDateTime dateTime = LocalDateTime.ofEpochSecond(this.createdAt, 0, ZoneOffset.UTC);
         String month = dateTime.getMonthValue() < 10 ? "0" + dateTime.getMonthValue() : "" + dateTime.getMonthValue();

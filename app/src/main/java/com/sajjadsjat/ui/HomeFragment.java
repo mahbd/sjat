@@ -61,6 +61,20 @@ public class HomeFragment extends Fragment {
                     clientRecords.add(new ClientRecord(record));
                 }
             }
+            // sort by createdAt
+            clientRecords.sort((o1, o2) -> {
+                if (o1.payment != null && o2.payment != null) {
+                    return o1.payment.getCreatedAt() < o2.payment.getCreatedAt() ? 1 : -1;
+                } else if (o1.record != null && o2.record != null) {
+                    return o1.record.getCreatedAt() < o2.record.getCreatedAt() ? 1 : -1;
+                } else if (o1.payment != null && o2.record != null) {
+                    return o1.payment.getCreatedAt() < o2.record.getCreatedAt() ? 1 : -1;
+                } else if (o1.record != null && o2.payment != null) {
+                    return o1.record.getCreatedAt() < o2.payment.getCreatedAt() ? 1 : -1;
+                } else {
+                    return 0;
+                }
+            });
             childItems.put(client.getId(), clientRecords);
         }
 

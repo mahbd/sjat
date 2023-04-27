@@ -10,8 +10,8 @@
         android:id="@+id/btnBackup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="10dp"
         android:text="Backup"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -20,10 +20,54 @@
         android:id="@+id/btnRestore"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginStart="20dp"
         android:text="Restore"
         app:layout_constraintStart_toEndOf="@+id/btnBackup"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/btnBackup" />
+
+    <Button
+        android:id="@+id/btnGenerateAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="120dp"
+        android:text="100 Address"
+        app:layout_constraintStart_toStartOf="@+id/btnBackup"
+        app:layout_constraintTop_toBottomOf="@+id/btnBackup" />
+
+    <Button
+        android:id="@+id/btnGenerateClient"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:text="1000 Client"
+        app:layout_constraintStart_toEndOf="@+id/btnGenerateAddress"
+        app:layout_constraintTop_toTopOf="@+id/btnGenerateAddress" />
+
+    <Button
+        android:id="@+id/btnGenerateRecord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="10000 Record"
+        app:layout_constraintStart_toStartOf="@+id/btnGenerateAddress"
+        app:layout_constraintTop_toBottomOf="@+id/btnGenerateAddress" />
+
+    <Button
+        android:id="@+id/btnGeneratePayment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:text="10000 Payment"
+        app:layout_constraintStart_toEndOf="@+id/btnGenerateRecord"
+        app:layout_constraintTop_toTopOf="@+id/btnGenerateRecord" />
+
+    <Button
+        android:id="@+id/btnClearDatabase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/red"
+        android:text="Clear Database"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnGenerateRecord" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

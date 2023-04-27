@@ -69,13 +69,18 @@ public class Client extends RealmObject {
         for (Payment payment : payments) {
             due -= payment.getAmount();
         }
+        setDue(due);
+        return due;
+    }
+
+    public void setDue(double due) {
         if (this.due == due) {
-            return due;
+            return;
         }
+        Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         this.due = due;
         realm.commitTransaction();
-        return due;
     }
 
     public Client() {
