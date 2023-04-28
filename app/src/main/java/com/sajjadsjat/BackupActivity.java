@@ -1,6 +1,7 @@
 package com.sajjadsjat;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -12,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.sajjadsjat.databinding.ActivityBackupBinding;
 import com.sajjadsjat.utils.Generator;
+import com.sajjadsjat.utils.H;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -54,11 +56,33 @@ public class BackupActivity extends AppCompatActivity {
 
         binding.btnGenerateRecord.setOnClickListener(v -> {
             binding.btnGenerateRecord.setEnabled(false);
-            for (int i = 0; i < 10000; i++) {
-                Generator.generateRandomRecord(this);
-            }
-            binding.btnGenerateRecord.setEnabled(true);
+            binding.btnGenerateRecord.setBackgroundColor(getResources().getColor(R.color.gray, Resources.getSystem().newTheme()));
+            H.runBackground(() -> {
+                for (int i = 0; i < 10000; i++) {
+                    Generator.generateRandomRecord(this);
+                }
+                binding.btnGenerateRecord.setEnabled(true);
+                binding.btnGenerateRecord.setBackgroundColor(getResources().getColor(R.color.purple_500, Resources.getSystem().newTheme()));
+            });
             Toast.makeText(this, "Records generated", Toast.LENGTH_SHORT).show();
+        });
+
+        binding.btnGenerateEmployee.setOnClickListener(v -> {
+            binding.btnGenerateEmployee.setEnabled(false);
+            for (int i = 0; i < 100; i++) {
+                Generator.generateRandomEmployee();
+            }
+            binding.btnGenerateEmployee.setEnabled(true);
+            Toast.makeText(this, "Employees generated", Toast.LENGTH_SHORT).show();
+        });
+
+        binding.btnGeneratePrice.setOnClickListener(v -> {
+            binding.btnGeneratePrice.setEnabled(false);
+            for (int i = 0; i < 100; i++) {
+                Generator.generateRandomPrice();
+            }
+            binding.btnGeneratePrice.setEnabled(true);
+            Toast.makeText(this, "Prices generated", Toast.LENGTH_SHORT).show();
         });
 
         binding.btnClearDatabase.setOnClickListener(v -> {

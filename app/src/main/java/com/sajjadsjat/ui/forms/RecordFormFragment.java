@@ -4,23 +4,14 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.PopupWindow;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -50,7 +41,6 @@ public class RecordFormFragment extends Fragment {
     Realm realm = Realm.getDefaultInstance();
 
     private FragmentRecordFormBinding binding;
-    private final String ITEM_PAYMENT = "Payment";
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -78,8 +68,8 @@ public class RecordFormFragment extends Fragment {
         for (Price price : uniqueItemPrices) {
             items.add(price.getItem());
         }
-        if (items.size() > 1) items.add(1, ITEM_PAYMENT);
-        else items.add(ITEM_PAYMENT);
+        if (items.size() > 1) items.add(1, H.ITEM_DEPOSIT);
+        else items.add(H.ITEM_DEPOSIT);
         RealmResults<Price> uniqueUnitPrices = realm.where(Price.class).distinct("unit").findAll();
         List<String> units = new ArrayList<>();
         for (Price price : uniqueUnitPrices) {
@@ -132,7 +122,7 @@ public class RecordFormFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = binding.recordItemDropdown.getSelectedItem().toString();
-                if (item.equals(ITEM_PAYMENT)) {
+                if (item.equals(H.ITEM_DEPOSIT)) {
                     binding.recordQuantity.setVisibility(View.GONE);
                     binding.recordUnitDropdown.setVisibility(View.GONE);
                     binding.recordPrice.setHint("Amount");
@@ -244,7 +234,7 @@ public class RecordFormFragment extends Fragment {
                 return;
             }
             binding.recordNameDropdown.setError(null);
-            if (!item.equals(ITEM_PAYMENT) && quantity == 0) {
+            if (!item.equals(H.ITEM_DEPOSIT) && quantity == 0) {
                 binding.recordQuantity.setError("Quantity is required");
                 return;
             }
@@ -256,7 +246,7 @@ public class RecordFormFragment extends Fragment {
             binding.recordPrice.setError(null);
 
             Record record;
-            if (item.equals(ITEM_PAYMENT)) {
+            if (item.equals(H.ITEM_DEPOSIT)) {
                 record = new Record(namesMap.get(name), createdAt, price, item, 0, seller, "TK", 0);
             } else {
                 double unitPrice, discount;
@@ -288,7 +278,7 @@ public class RecordFormFragment extends Fragment {
         String name = record.getClient().getName();
         String item = record.getItem();
         String message;
-        if (item.equals(ITEM_PAYMENT)) {
+        if (item.equals(H.ITEM_DEPOSIT)) {
             message = String.format(Locale.getDefault(), "Send message to %s for payment of %.0f", name, record.getTotal());
         } else {
             message = String.format(Locale.getDefault(), "Send message to %s for buying %f %s with price %.0f", name, record.getQuantity(), record.getUnit(), record.getTotal());

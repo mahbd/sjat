@@ -5,6 +5,8 @@ import android.content.Context;
 import com.sajjadsjat.R;
 import com.sajjadsjat.model.Address;
 import com.sajjadsjat.model.Client;
+import com.sajjadsjat.model.Employee;
+import com.sajjadsjat.model.Price;
 import com.sajjadsjat.model.Record;
 
 import java.time.LocalDateTime;
@@ -53,6 +55,24 @@ public class Generator {
         return min + (max - min) * random.nextDouble();
     }
 
+    public static Employee generateRandomEmployee() {
+        String name = generateRandomString(Generator.generateRandomInt(5, 20));
+        String job = generateRandomString(Generator.generateRandomInt(5, 10));
+        String phone = generateRandomPhone();
+        return new Employee(name, job, phone);
+    }
+
+    public static Employee getRandomEmployee() {
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<Employee> employees = realm.where(Employee.class).findAll();
+        int total = employees.size();
+        if (total == 0) {
+            return generateRandomEmployee();
+        }
+        int random = (int) (Math.random() * total);
+        return employees.get(random);
+    }
+
     public static Address generateRandomAddress() {
         String para = generateRandomString(Generator.generateRandomInt(5, 15));
         String village = generateRandomString(Generator.generateRandomInt(5, 15));
@@ -69,6 +89,25 @@ public class Generator {
         }
         int random = (int) (Math.random() * total);
         return address.get(random);
+    }
+
+    public static Price generateRandomPrice() {
+        String item = generateRandomString(Generator.generateRandomInt(5, 20));
+        String[] units = {"kg", "gm", "ltr", "ml", "pc", "dozen", "box", "packet", "bottle", "can", "bag", "sack", "bundle", "pair", "set", "roll", "sheet"};
+        String unit = units[generateRandomInt(0, units.length - 1)];
+        double price = generateRandomDouble(0, 1000);
+        return new Price(item, price, unit);
+    }
+
+    public static Price getRandomPrice() {
+        Realm realm = Realm.getDefaultInstance();
+        RealmResults<Price> prices = realm.where(Price.class).findAll();
+        int total = prices.size();
+        if (total == 0) {
+            return generateRandomPrice();
+        }
+        int random = (int) (Math.random() * total);
+        return prices.get(random);
     }
 
     public static Client generateRandomClient() {
@@ -100,14 +139,9 @@ public class Generator {
         LocalDateTime date = LocalDateTime.of(generateRandomInt(2020, 2023), generateRandomInt(1, 12), generateRandomInt(1, 28), generateRandomInt(0, 23), generateRandomInt(0, 59));
         long createdAt = H.datetimeToTimestamp(date);
         double discount = generateRandomDouble(0, 1000);
-        String[] items = context.getResources().getStringArray(R.array.arrays_items);
-        String item = items[generateRandomInt(0, items.length - 1)];
+        Price price = getRandomPrice();
         double quantity = generateRandomDouble(0, 100);
-        String[] employees = context.getResources().getStringArray(R.array.arrays_employees);
-        String seller = employees[generateRandomInt(0, employees.length - 1)];
-        String[] units = context.getResources().getStringArray(R.array.arrays_units);
-        String unit = units[generateRandomInt(0, units.length - 1)];
-        double unitPrice = generateRandomDouble(0, 1000);
-        return new Record(client, createdAt, discount, item, quantity, seller, unit, unitPrice);
+        String seller = getRandomEmployee().getName();
+        return new Record(client, createdAt, discount, price.getItem(), quantity, seller, price.getUnit(), price.getPrice());
     }
 }

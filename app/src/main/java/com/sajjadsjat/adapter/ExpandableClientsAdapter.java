@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.sajjadsjat.R;
 import com.sajjadsjat.model.Client;
 import com.sajjadsjat.model.Record;
+import com.sajjadsjat.utils.H;
 
 import java.util.List;
 import java.util.Locale;
@@ -90,7 +91,13 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
         TextView childTextView = convertView.findViewById(R.id.record_brief_text);
         Record record = getChild(groupPosition, childPosition);
 
-        if (record != null && !record.getItem().equals("Payment")) {
+        if (record != null && record.getItem().equals(H.ITEM_DEPOSIT)) {
+            childTextView.setText(String.format(Locale.getDefault(), "%s     %.0fTk", record.getDateTimeShort(), record.getDiscount()));
+            return convertView;
+        } else if (record != null && record.getItem().equals(H.ITEM_DISCOUNT)) {
+            childTextView.setText(String.format(Locale.getDefault(), "%s Discounted %.0fTk and paid", record.getDateTimeShort(), record.getDiscount()));
+            return convertView;
+        } else if (record != null && !record.getItem().equals("Payment")) {
             double price = record.getUnitPrice() * record.getQuantity() - record.getDiscount();
 
             childTextView.setText(String.format(Locale.getDefault(), "%s  %s    %.0fTk", record.getDateTimeShort(), record.getItem(), price));
@@ -110,9 +117,6 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
                 TableLayout tableLayout = finalConvertView.findViewById(R.id.record_detail_table);
                 tableLayout.setVisibility(tableLayout.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
             });
-            return convertView;
-        } else if (record != null && record.getItem().equals("Payment")) {
-            childTextView.setText(String.format(Locale.getDefault(), "%s     %.0fTk", record.getDateTimeShort(), record.getDiscount()));
             return convertView;
         } else {
             childTextView.setText("No record found");

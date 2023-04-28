@@ -52,11 +52,19 @@
         app:layout_constraintTop_toBottomOf="@+id/btnGenerateAddress" />
 
     <Button
-        android:id="@+id/btnGeneratePayment"
+        android:id="@+id/btnGeneratePrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="100 Price"
+        app:layout_constraintStart_toStartOf="@+id/btnGenerateAddress"
+        app:layout_constraintTop_toBottomOf="@+id/btnGenerateRecord" />
+
+    <Button
+        android:id="@+id/btnGenerateEmployee"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:text="10000 Payment"
+        android:text="100 Employee"
         app:layout_constraintStart_toEndOf="@+id/btnGenerateRecord"
         app:layout_constraintTop_toTopOf="@+id/btnGenerateRecord" />
 
@@ -68,6 +76,6 @@
         android:text="Clear Database"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnGenerateRecord" />
+        app:layout_constraintTop_toBottomOf="@+id/btnGeneratePrice" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

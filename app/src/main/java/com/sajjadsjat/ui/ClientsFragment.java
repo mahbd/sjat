@@ -1,7 +1,9 @@
 package com.sajjadsjat.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,11 +23,15 @@ import com.sajjadsjat.adapter.ClientsAdapter;
 import com.sajjadsjat.databinding.FragmentClientsBinding;
 import com.sajjadsjat.model.Address;
 import com.sajjadsjat.model.Client;
+import com.sajjadsjat.model.Record;
+import com.sajjadsjat.utils.H;
 import com.sajjadsjat.utils.SimpleSearchableDropdown;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -73,7 +79,7 @@ public class ClientsFragment extends Fragment {
 
         binding.clientList.setOnItemLongClickListener((parent, view, position, id) -> {
             PopupMenu popupMenu = new PopupMenu(requireContext(), view);
-            popupMenu.getMenuInflater().inflate(R.menu.long_popup, popupMenu.getMenu());
+            popupMenu.getMenuInflater().inflate(R.menu.long_popup_client, popupMenu.getMenu());
             popupMenu.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == R.id.action_edit) {
                     Bundle bundle = new Bundle();
@@ -84,6 +90,37 @@ public class ClientsFragment extends Fragment {
                     Client.delete(id);
                     Toast.makeText(requireContext(), "Address deleted", Toast.LENGTH_SHORT).show();
                     adapter.notifyDataSetChanged();
+                } else if (item.getItemId() == R.id.action_call) {
+                    Client client = Client.get(id);
+                    if (client != null) {
+                        String phone = client.getPhone();
+                        if (phone != null && !phone.isEmpty()) {
+                            Intent intent = new Intent(Intent.ACTION_DIAL);
+                            intent.setData(Uri.parse("tel:" + phone));
+                            startActivity(intent);
+                            return true;
+                        }
+                    }
+                    Toast.makeText(requireContext(), "No phone number found", Toast.LENGTH_SHORT).show();
+                } else if (item.getItemId() == R.id.action_mark_paid) {
+                    Client client = Client.get(id);
+                    if (client != null) {
+                        double due = client.getDue();
+                        H.showAlert(requireContext(), "Mark as paid", String.format(Locale.getDefault(), "%s has %.2f tk due. Are you sure you want to mark as paid?", client.getName(), due), new H.AlertCallback() {
+                            @Override
+                            public void onOk() {
+                                String owner = prefs.getString("owner", "Md. Ibrahim Khalil");
+                                new Record(client, H.datetimeToTimestamp(LocalDateTime.now()), due, H.ITEM_DISCOUNT, 0, owner, "TK", 0);
+                                H.sendMessage(requireContext(), client, true);
+                                adapter.notifyDataSetChanged();
+                                Toast.makeText(requireContext(), "Marked as paid", Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onCancel() {
+                            }
+                        });
+                    }
                 }
                 return true;
             });
