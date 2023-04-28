@@ -105,4 +105,14 @@ public class Price extends RealmObject {
     public static RealmResults<Price> getAll() {
         return Realm.getDefaultInstance().where(Price.class).findAll();
     }
+
+    public static void delete(long id) {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        Price price1 = realm.where(Price.class).equalTo("id", id).findFirst();
+        if (price1 != null) {
+            price1.deleteFromRealm();
+        }
+        realm.commitTransaction();
+    }
 }

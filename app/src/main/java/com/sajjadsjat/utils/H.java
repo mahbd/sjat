@@ -1,7 +1,11 @@
 package com.sajjadsjat.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
@@ -22,6 +26,7 @@ import io.realm.Sort;
 public class H {
     public static final String ITEM_DEPOSIT = "Deposit";
     public static final String ITEM_DISCOUNT = "Discount";
+    public static final String ITEM_PREVIOUS = "Previous";
 
     public static long stringToNumber(String s) {
         try {
@@ -59,6 +64,8 @@ public class H {
                     lastFewTransaction.append(record.getDateTimeShort()).append(" deposit ").append(record.getDiscount()).append("tk\n");
                 } else if (record.getItem().equals(ITEM_DISCOUNT)) {
                     lastFewTransaction.append(record.getDateTimeShort()).append(" all due PAID\n");
+                } else if (record.getItem().equals(ITEM_PREVIOUS)) {
+                    lastFewTransaction.append("Previous due ").append(record.getTotal()).append("tk\n");
                 } else {
                     lastFewTransaction.append(record.getDateTimeShort()).append(" ").append(record.getQuantity()).append(" ").append(record.getUnit()).append(" ").append(record.getItem()).append(" ").append(record.getTotal()).append("tk\n");
                 }
@@ -84,6 +91,18 @@ public class H {
         sendMessage(context, client, false);
     }
 
+    public static void sendEmail(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("my_prefs", Context.MODE_PRIVATE);
+        String emailUsername = prefs.getString("email_username", "");
+        String emailPassword = prefs.getString("email_password", "");
+        if (emailUsername.isEmpty() || emailPassword.isEmpty()) {
+            Toast.makeText(context, "Please set email username and password in settings", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        new EmailSender(emailUsername, emailPassword).sendEmail("mahmudula2000@gmail.com", "Test", "Test");
+    }
+
     public static interface AlertCallback {
         public void onOk();
 
@@ -106,6 +125,7 @@ public class H {
     public static interface BackgroundRun {
         public void run();
     }
+
     public static void runBackground(BackgroundRun backgroundRun) {
         Executor executor = Executors.newSingleThreadExecutor();
 
@@ -115,5 +135,27 @@ public class H {
                 backgroundRun.run();
             }
         });
+    }
+
+    public static interface AfterTextChanged {
+        void afterTextChanged(Editable s);
+    }
+
+    public static TextWatcher createAfterTextChanged(AfterTextChanged afterTextChanged) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                afterTextChanged.afterTextChanged(s);
+            }
+        };
     }
 }

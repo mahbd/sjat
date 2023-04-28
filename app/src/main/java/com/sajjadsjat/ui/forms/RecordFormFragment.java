@@ -68,8 +68,14 @@ public class RecordFormFragment extends Fragment {
         for (Price price : uniqueItemPrices) {
             items.add(price.getItem());
         }
-        if (items.size() > 1) items.add(1, H.ITEM_DEPOSIT);
-        else items.add(H.ITEM_DEPOSIT);
+        if (items.size() > 1) {
+            items.add(1, H.ITEM_DEPOSIT);
+            items.add(2, H.ITEM_PREVIOUS);
+        }
+        else {
+            items.add(H.ITEM_DEPOSIT);
+            items.add(H.ITEM_PREVIOUS);
+        }
         RealmResults<Price> uniqueUnitPrices = realm.where(Price.class).distinct("unit").findAll();
         List<String> units = new ArrayList<>();
         for (Price price : uniqueUnitPrices) {
@@ -122,7 +128,7 @@ public class RecordFormFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = binding.recordItemDropdown.getSelectedItem().toString();
-                if (item.equals(H.ITEM_DEPOSIT)) {
+                if (item.equals(H.ITEM_DEPOSIT) || item.equals(H.ITEM_PREVIOUS)) {
                     binding.recordQuantity.setVisibility(View.GONE);
                     binding.recordUnitDropdown.setVisibility(View.GONE);
                     binding.recordDiscount.setVisibility(View.GONE);
@@ -197,7 +203,7 @@ public class RecordFormFragment extends Fragment {
                 String item = binding.recordItemDropdown.getSelectedItem().toString();
                 double enteredPrice = H.stringToDouble(binding.recordPrice.getText().toString());
                 double price = calculatePrice();
-                if (price != enteredPrice && !item.equals(H.ITEM_DEPOSIT)) {
+                if (price != enteredPrice && !item.equals(H.ITEM_DEPOSIT) && !item.equals(H.ITEM_PREVIOUS)) {
                     binding.recordDiscount.setText(String.format(Locale.getDefault(), "Discount: %.2f", price - enteredPrice));
                     binding.recordDiscount.setVisibility(View.VISIBLE);
                 } else {
@@ -219,6 +225,20 @@ public class RecordFormFragment extends Fragment {
             long timestamp1 = H.stringToNumber(binding.recordTimestamp1.getText().toString());
             long timestamp2 = H.stringToNumber(binding.recordTimestamp2.getText().toString());
             long createdAt = timestamp1 + timestamp2;
+            if (binding.recordSellerDropdown.getSelectedItem() == null) {
+                H.showAlert(requireContext(), "Seller is required", "Please create a employee first", new H.AlertCallback() {
+                    @Override
+                    public void onOk() {
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+                });
+                return;
+            }
             String seller = binding.recordSellerDropdown.getSelectedItem().toString();
 
             if (name.isEmpty() || names.stream().noneMatch(name::equals)) {
@@ -226,7 +246,7 @@ public class RecordFormFragment extends Fragment {
                 return;
             }
             binding.recordNameDropdown.setError(null);
-            if (!item.equals(H.ITEM_DEPOSIT) && quantity == 0) {
+            if (!item.equals(H.ITEM_DEPOSIT) && quantity == 0 && !item.equals(H.ITEM_PREVIOUS)) {
                 binding.recordQuantity.setError("Quantity is required");
                 return;
             }
@@ -240,6 +260,8 @@ public class RecordFormFragment extends Fragment {
             Record record;
             if (item.equals(H.ITEM_DEPOSIT)) {
                 record = new Record(namesMap.get(name), createdAt, price, item, 0, seller, "TK", 0);
+            } else if (item.equals(H.ITEM_PREVIOUS)) {
+                record = new Record(namesMap.get(name), createdAt, 0, item, 1, seller, "N", price);
             } else {
                 double unitPrice, discount;
                 Price priceObj = realm.where(Price.class).equalTo("item", item).equalTo("unit", unit).findFirst();
@@ -253,7 +275,8 @@ public class RecordFormFragment extends Fragment {
                 record = new Record(namesMap.get(name), createdAt, discount, item, quantity, seller, unit, unitPrice);
             }
             showSendSmsPop(record);
-            requireActivity().onBackPressed();
+            NavController navController = Navigation.findNavController(v);
+            navController.navigate(R.id.nav_home);
         });
         return root;
     }

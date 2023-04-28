@@ -81,7 +81,7 @@ public class PriceFormFragment extends Fragment {
                 } else if (item.getItemId() == R.id.action_delete) {
                     String addressString = prices.get(position);
                     long addressId1 = priceMap.get(addressString);
-                    Address.delete(addressId1);
+                    Price.delete(addressId1);
                     Toast.makeText(requireContext(), "Price deleted", Toast.LENGTH_SHORT).show();
                     prices.remove(position);
                     adapter.notifyDataSetChanged();
@@ -131,7 +131,7 @@ public class PriceFormFragment extends Fragment {
                 Toast.makeText(requireContext(), "Price Updated", Toast.LENGTH_SHORT).show();
                 prices.clear();
                 priceMap.clear();
-                for (Address a : Address.getAll()) {
+                for (Price a : Price.getAll()) {
                     prices.add(a.toString());
                     priceMap.put(a.toString(), a.getId());
                 }
