@@ -22,30 +22,38 @@
 
     </TableLayout>
 
-    <TableLayout
-        android:id="@+id/record_detail_table"
+    <LinearLayout
         android:visibility="gone"
+        android:id="@+id/record_normal_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TableRow>
+        <TextView
+            android:id="@+id/record_detail_full_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10TRUCTOR" />
 
-            <TextView
-                android:id="@+id/record_detail_quantity"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_weight="1"
-                android:text="10TRUCTOR" />
+        <TextView
+            android:id="@+id/record_detail_quantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="10TRUCTOR" />
 
-            <TextView
-                android:id="@+id/record_detail_seller"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_weight="1"
-                android:text="Kausar" />
-        </TableRow>
+        <TextView
+            android:id="@+id/record_detail_seller"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Kausar" />
+    </LinearLayout>
+
+    <TableLayout
+        android:visibility="gone"
+        android:id="@+id/record_detail_table"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <TableRow>
 

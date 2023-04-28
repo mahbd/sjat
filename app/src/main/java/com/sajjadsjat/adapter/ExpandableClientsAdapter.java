@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -94,6 +95,18 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
 
         if (record != null && record.getItem().equals(H.ITEM_DEPOSIT)) {
             childTextView.setText(String.format(Locale.getDefault(), "%s     %.0fTk", record.getDateTimeShort(), record.getDiscount()));
+            TextView recordFullTime = convertView.findViewById(R.id.record_detail_full_date);
+            recordFullTime.setText(record.getDateTime());
+            TextView recordDetailQuantity = convertView.findViewById(R.id.record_detail_quantity);
+            recordDetailQuantity.setVisibility(View.GONE);
+            TextView recordDetailSeller = convertView.findViewById(R.id.record_detail_seller);
+            recordDetailSeller.setText(record.getSeller());
+
+            View finalConvertView = convertView;
+            convertView.setOnClickListener(v -> {
+                LinearLayout normalLayout = finalConvertView.findViewById(R.id.record_normal_layout);
+                normalLayout.setVisibility(normalLayout.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+            });
             return convertView;
         } else if (record != null && record.getItem().equals(H.ITEM_DISCOUNT)) {
             childTextView.setText(String.format(Locale.getDefault(), "%s Discounted %.0fTk and paid", record.getDateTimeShort(), record.getDiscount()));
@@ -102,8 +115,11 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
             double price = record.getUnitPrice() * record.getQuantity() - record.getDiscount();
 
             childTextView.setText(String.format(Locale.getDefault(), "%s  %s    %.0fTk", record.getDateTimeShort(), record.getItem(), price));
+            TextView recordFullTime = convertView.findViewById(R.id.record_detail_full_date);
+            recordFullTime.setText(record.getDateTime());
             TextView recordDetailQuantity = convertView.findViewById(R.id.record_detail_quantity);
             recordDetailQuantity.setText(String.format(Locale.getDefault(), "%.2f %s", record.getQuantity(), record.getUnit()));
+            recordDetailQuantity.setVisibility(View.VISIBLE);
             TextView recordDetailSeller = convertView.findViewById(R.id.record_detail_seller);
             recordDetailSeller.setText(record.getSeller());
             TextView recordDetailUnitPrice = convertView.findViewById(R.id.record_detail_unit_price);
@@ -116,7 +132,9 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
             View finalConvertView = convertView;
             convertView.setOnClickListener(v -> {
                 TableLayout tableLayout = finalConvertView.findViewById(R.id.record_detail_table);
+                LinearLayout normalLayout = finalConvertView.findViewById(R.id.record_normal_layout);
                 tableLayout.setVisibility(tableLayout.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+                normalLayout.setVisibility(normalLayout.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
             });
             return convertView;
         } else {

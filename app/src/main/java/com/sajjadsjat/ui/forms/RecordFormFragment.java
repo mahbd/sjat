@@ -194,9 +194,10 @@ public class RecordFormFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String item = binding.recordItemDropdown.getSelectedItem().toString();
                 double enteredPrice = H.stringToDouble(binding.recordPrice.getText().toString());
                 double price = calculatePrice();
-                if (price != enteredPrice) {
+                if (price != enteredPrice && !item.equals(H.ITEM_DEPOSIT)) {
                     binding.recordDiscount.setText(String.format(Locale.getDefault(), "Discount: %.2f", price - enteredPrice));
                     binding.recordDiscount.setVisibility(View.VISIBLE);
                 } else {
