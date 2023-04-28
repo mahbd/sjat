@@ -18,26 +18,31 @@ android {
     namespace 'com.sajjadsjat'
     compileSdk 33
 
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'x86', 'armeabi-v7a', 'mips', 'arm64-v8a', 'x86_64', 'mips64'
+            universalApk true
+        }
+    }
+
     defaultConfig {
         applicationId "com.sajjadsjat"
         minSdk 30
         targetSdk 33
         versionCode 1
         versionName "1.0"
-
-        ndk {
-            abiFilters "armeabi-v7a", "x86", "armeabi", "mips", "x86_64", "arm64-v8a", "mips64"
-        }
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
