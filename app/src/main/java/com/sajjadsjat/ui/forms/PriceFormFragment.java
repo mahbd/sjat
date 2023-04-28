@@ -111,7 +111,7 @@ public class PriceFormFragment extends Fragment {
                 return;
             }
             binding.etPrice.setError(null);
-            if (Price.doesExist(itemName, unit)) {
+            if (Price.doesExist(itemName, unit) && price == null) {
                 Toast.makeText(requireContext(), "Price already exists", Toast.LENGTH_SHORT).show();
                 return;
             }

@@ -16,11 +16,15 @@ import androidx.navigation.Navigation;
 import com.sajjadsjat.R;
 import com.sajjadsjat.databinding.FragmentAddressBinding;
 import com.sajjadsjat.model.Address;
+import com.sajjadsjat.utils.SimpleSearchableDropdown;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class AddressFragment extends Fragment {
     private FragmentAddressBinding binding;
@@ -43,13 +47,22 @@ public class AddressFragment extends Fragment {
         }
 
         List<String> addresses = new ArrayList<>();
+        Set<String> villages = new HashSet<>();
+        Set<String> unions = new HashSet<>();
         Map<String, Long> addressMap = new HashMap<>();
         for (Address a : Address.getAll()) {
             String addressString = a.toString();
             addresses.add(addressString);
             addressMap.put(addressString, a.getId());
+            villages.add(a.getVillage());
+            unions.add(a.getUnion());
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, addresses);
+        new SimpleSearchableDropdown(requireContext(), binding.etVillage, s -> s)
+                .showDropdown(new ArrayList<>(villages));
+
+        new SimpleSearchableDropdown(requireContext(), binding.etUnion, s -> s)
+                .showDropdown(new ArrayList<>(unions));
         binding.lvAddresses.setAdapter(adapter);
 
         binding.lvAddresses.setOnItemLongClickListener((parent, view, position, id) -> {
