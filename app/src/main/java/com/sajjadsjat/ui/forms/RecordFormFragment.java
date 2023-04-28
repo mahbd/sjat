@@ -80,13 +80,13 @@ public class RecordFormFragment extends Fragment {
             employees.add(employee.getName());
         }
 
-        ArrayAdapter<String> itemAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, items);
+        ArrayAdapter<String> itemAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, items);
         binding.recordItemDropdown.setAdapter(itemAdapter);
 
-        ArrayAdapter<String> unitAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, units);
+        ArrayAdapter<String> unitAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, units);
         binding.recordUnitDropdown.setAdapter(unitAdapter);
 
-        ArrayAdapter<String> sellerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, employees);
+        ArrayAdapter<String> sellerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, employees);
         binding.recordSellerDropdown.setAdapter(sellerAdapter);
 
         LocalDateTime now = LocalDateTime.now();
@@ -125,22 +125,13 @@ public class RecordFormFragment extends Fragment {
                 if (item.equals(H.ITEM_DEPOSIT)) {
                     binding.recordQuantity.setVisibility(View.GONE);
                     binding.recordUnitDropdown.setVisibility(View.GONE);
+                    binding.recordDiscount.setVisibility(View.GONE);
                     binding.recordPrice.setHint("Amount");
                 } else {
                     binding.recordQuantity.setVisibility(View.VISIBLE);
                     binding.recordUnitDropdown.setVisibility(View.VISIBLE);
                     binding.recordPrice.setHint("Price");
                 }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        binding.recordItemDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 double price = calculatePrice();
                 if (price != 0) {
                     binding.recordPrice.setText(String.format(Locale.getDefault(), "%.2f", price));
