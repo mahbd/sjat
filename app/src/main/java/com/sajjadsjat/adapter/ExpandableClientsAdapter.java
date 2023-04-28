@@ -18,6 +18,7 @@ import java.util.Locale;
 
 import io.realm.Case;
 import io.realm.Realm;
+import io.realm.Sort;
 
 public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
     private final Realm realm = Realm.getDefaultInstance();
@@ -141,7 +142,7 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
 
     private void applyFilters() {
         Realm realm = Realm.getDefaultInstance();
-        clients = realm.where(Client.class).contains("name", nameFilter, Case.INSENSITIVE).contains("address.para", paraFilter, Case.INSENSITIVE).limit(queryLimit).findAll();
+        clients = realm.where(Client.class).contains("name", nameFilter, Case.INSENSITIVE).contains("address.para", paraFilter, Case.INSENSITIVE).sort("due", Sort.DESCENDING).limit(queryLimit).findAll();
         this.notifyDataSetChanged();
     }
 }

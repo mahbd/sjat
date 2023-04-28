@@ -30,6 +30,7 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class HomeFragment extends Fragment {
     private final Realm realm = Realm.getDefaultInstance();
@@ -49,7 +50,7 @@ public class HomeFragment extends Fragment {
         AutoCompleteTextView paraDropdown = binding.paraDropdown;
 
         ExpandableListView expandableListView = binding.expandableListView;
-        RealmResults<Client> clients = realm.where(Client.class).limit(homeQueryLimit).findAll();
+        RealmResults<Client> clients = realm.where(Client.class).sort("due", Sort.DESCENDING).limit(homeQueryLimit).findAll();
 
 
         ExpandableClientsAdapter adapter = new ExpandableClientsAdapter(this.getContext(), clients, homeQueryLimit);

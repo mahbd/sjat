@@ -87,8 +87,8 @@ public class ClientFormFragment extends Fragment {
             if (client == null) {
                 new Client(name, fathersName, phone, addressMap.get(address), extra);
                 Toast.makeText(requireContext(), "Client Saved", Toast.LENGTH_SHORT).show();
-                NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
-                navController.navigate(R.id.nav_clients);
+                requireActivity().onBackPressed();
+
             }  else {
                 client.setName(name);
                 client.setFathersName(fathersName);
@@ -96,8 +96,7 @@ public class ClientFormFragment extends Fragment {
                 client.setAddress(addressMap.get(address));
                 client.setExtra(extra);
                 Toast.makeText(requireContext(), "Client Updated", Toast.LENGTH_SHORT).show();
-                NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
-                navController.navigate(R.id.nav_clients);
+                requireActivity().onBackPressed();
             }
         });
         return root;

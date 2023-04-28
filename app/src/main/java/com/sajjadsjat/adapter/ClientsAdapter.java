@@ -18,6 +18,7 @@ import java.util.Locale;
 import io.realm.Case;
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class ClientsAdapter extends ArrayAdapter<Client> {
     private final Realm realm = Realm.getDefaultInstance();
@@ -110,7 +111,7 @@ public class ClientsAdapter extends ArrayAdapter<Client> {
     }
 
     private void applyFilters() {
-        clients = realm.where(Client.class).contains("name", nameFilter, Case.INSENSITIVE).contains("address.para", paraFilter, Case.INSENSITIVE).limit(queryLimit).findAll();
+        clients = realm.where(Client.class).contains("name", nameFilter, Case.INSENSITIVE).contains("address.para", paraFilter, Case.INSENSITIVE).sort("due", Sort.DESCENDING).limit(queryLimit).findAll();
         this.notifyDataSetChanged();
     }
 }

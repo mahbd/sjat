@@ -252,9 +252,7 @@ public class RecordFormFragment extends Fragment {
                 record = new Record(namesMap.get(name), createdAt, discount, item, quantity, seller, unit, unitPrice);
             }
             showSendSmsPop(record);
-
-            NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_content_main);
-            navController.navigate(R.id.nav_home);
+            requireActivity().onBackPressed();
         });
         return root;
     }

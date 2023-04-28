@@ -35,6 +35,7 @@ import java.util.Locale;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class ClientsFragment extends Fragment {
 
@@ -49,7 +50,7 @@ public class ClientsFragment extends Fragment {
         prefs = requireContext().getSharedPreferences("my_prefs", Context.MODE_PRIVATE);
         int searchNameQueryLimit = prefs.getInt("search_name_query_limit", 10);
 
-        RealmResults<Client> clients = Realm.getDefaultInstance().where(Client.class).limit(searchNameQueryLimit).findAll();
+        RealmResults<Client> clients = Realm.getDefaultInstance().where(Client.class).limit(searchNameQueryLimit).sort("due", Sort.DESCENDING).findAll();
         ClientsAdapter adapter = new ClientsAdapter(requireContext(), R.layout.client_item, searchNameQueryLimit, clients);
         binding.clientList.setAdapter(adapter);
 
