@@ -89,7 +89,7 @@ public class ClientsFragment extends Fragment {
                     navController.navigate(R.id.nav_client_form, bundle);
                 } else if (item.getItemId() == R.id.action_delete) {
                     Client.delete(id);
-                    Toast.makeText(requireContext(), "Address deleted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Client deleted", Toast.LENGTH_SHORT).show();
                     adapter.notifyDataSetChanged();
                 } else if (item.getItemId() == R.id.action_call) {
                     Client client = Client.get(id);

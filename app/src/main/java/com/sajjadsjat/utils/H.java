@@ -75,7 +75,7 @@ public class H {
         }
         String message = "Dear " + client.getName() + ",\n" +
                 lastFewTransaction +
-                "Your due is " + client.getDue() + "tk.\n" +
+                "Your current due is " + client.getDue() + "tk.\n" +
                 "-\nIbrahim Khalil";
         if (isPaid) {
             message = "Dear " + client.getName() + ",\n" +

@@ -104,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
         } else if (item.getItemId() == R.id.action_backup_restore) {
             Intent intent = new Intent(this, BackupActivity.class);
             startActivity(intent);
+        } else if (item.getItemId() == R.id.action_new_client) {
+            navController.navigate(R.id.nav_client_form);
         }
         return true;
     }

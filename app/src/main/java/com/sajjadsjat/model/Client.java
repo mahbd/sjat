@@ -96,9 +96,8 @@ public class Client extends RealmObject {
         realm.commitTransaction();
     }
 
-    @Nullable
     public String getFathersName() {
-        return fathersName;
+        return fathersName == null ? "" : fathersName;
     }
 
     public void setFathersName(@Nullable String fathersName) {
@@ -202,11 +201,13 @@ public class Client extends RealmObject {
         return null;
     }
 
-    static String validateNameFatherName(@androidx.annotation.Nullable String name, @androidx.annotation.Nullable String fathersName) {
-        if (name == null) {
+    public static String validateNameFatherName(@androidx.annotation.Nullable String name, @androidx.annotation.Nullable String fathersName) {
+        name = formatName(name);
+        fathersName = formatName(fathersName);
+        if (name.isEmpty()) {
             return "Name cannot be null";
         }
-        if (fathersName == null) {
+        if (fathersName.isEmpty()) {
             return "Father's name cannot be null";
         }
         RealmResults<Client> clients = Realm.getDefaultInstance().where(Client.class).equalTo("name", name).equalTo("fathersName", fathersName).findAll();

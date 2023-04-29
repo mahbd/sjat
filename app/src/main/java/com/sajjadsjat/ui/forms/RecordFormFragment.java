@@ -2,20 +2,18 @@ package com.sajjadsjat.ui.forms;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
-import com.sajjadsjat.R;
+import com.sajjadsjat.MainActivity;
 import com.sajjadsjat.databinding.FragmentRecordFormBinding;
 import com.sajjadsjat.model.Client;
 import com.sajjadsjat.model.Employee;
@@ -118,7 +116,8 @@ public class RecordFormFragment extends Fragment {
         binding.recordSellerDropdown.setAdapter(sellerAdapter);
 
         LocalDateTime now = LocalDateTime.now();
-        binding.recordTimestamp1.setText(String.format("%s", H.datetimeToTimestamp(LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 0, 0))));
+        String dateToSeconds = String.format("%s", H.datetimeToTimestamp(LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), 0, 0)));
+        binding.recordTimestamp1.setText(dateToSeconds);
         binding.recordTimestamp1.setOnClickListener(v -> {
             int year = now.getYear();
             int month = now.getMonthValue() - 1;
@@ -187,7 +186,8 @@ public class RecordFormFragment extends Fragment {
             String name = binding.recordNameDropdown.getText().toString();
             String item = binding.recordItemDropdown.getText().toString();
             double quantity = H.stringToDouble(binding.recordQuantity.getText().toString());
-            String unit = binding.recordUnitDropdown.getSelectedItem().toString();
+            Object unitObj = binding.recordUnitDropdown.getSelectedItem();
+            String unit = unitObj == null ? "" : unitObj.toString();
             double price = H.stringToDouble(binding.recordPrice.getText().toString());
             long timestamp1 = H.stringToNumber(binding.recordTimestamp1.getText().toString());
             long timestamp2 = H.stringToNumber(binding.recordTimestamp2.getText().toString());
@@ -203,7 +203,7 @@ public class RecordFormFragment extends Fragment {
                 return;
             }
             binding.recordNameDropdown.setError(null);
-            if (Price.hasItem(item)) {
+            if (!Price.hasItem(item) && !item.equals(H.ITEM_DEPOSIT) && !item.equals(H.ITEM_PREVIOUS)) {
                 binding.recordItemDropdown.setError("Select a valid item");
                 return;
             }
@@ -236,9 +236,8 @@ public class RecordFormFragment extends Fragment {
                 }
                 record = new Record(namesMap.get(name), createdAt, discount, item, quantity, seller, unit, unitPrice);
             }
-            showSendSmsPop(record);
-            NavController navController = Navigation.findNavController(v);
-            navController.navigate(R.id.nav_home);
+            showSendSmsPop(requireContext(), record);
+            requireActivity().onBackPressed();
         });
         return root;
     }
@@ -249,7 +248,7 @@ public class RecordFormFragment extends Fragment {
         binding = null;
     }
 
-    private void showSendSmsPop(Record record) {
+    private void showSendSmsPop(Context context, Record record) {
         String name = record.getClient().getName();
         String item = record.getItem();
         String message;
@@ -258,13 +257,24 @@ public class RecordFormFragment extends Fragment {
         } else {
             message = String.format(Locale.getDefault(), "Send message to %s for buying %.2f %s with price %.2f", name, record.getQuantity(), record.getUnit(), record.getTotal());
         }
-        H.showAlert(requireContext(), "Send message", message, () -> H.sendMessage(requireContext(), record.getClient()));
+        H.showAlert(context, "Send message", message, new H.AlertCallback() {
+            @Override
+            public void onOk() {
+                H.sendMessage(context, record.getClient());
+            }
+
+            @Override
+            public void onCancel() {
+
+            }
+        });
     }
 
     private double calculatePrice() {
         String item = binding.recordItemDropdown.getText().toString();
         double quantity = H.stringToDouble(binding.recordQuantity.getText().toString());
-        String unit = binding.recordUnitDropdown.getSelectedItem().toString();
+        Object unitObj = binding.recordUnitDropdown.getSelectedItem();
+        String unit = unitObj == null ? "" : unitObj.toString();
         Price priceObj = realm.where(Price.class).equalTo("item", item).equalTo("unit", unit).findFirst();
         if (priceObj != null) {
             return priceObj.getPrice() * quantity;

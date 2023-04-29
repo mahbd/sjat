@@ -7,6 +7,11 @@
         android:title="@string/action_address"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_new_client"
+        android:orderInCategory="100"
+        android:title="@string/action_new_client"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_employees"
         android:orderInCategory="100"
         android:title="@string/action_employees"

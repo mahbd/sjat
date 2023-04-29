@@ -76,7 +76,7 @@ public class Price extends RealmObject {
 
     @NonNull
     public String toString() {
-        return this.item + " -> " + this.price + " -> " + this.unit;
+        return this.item + " 1" + this.unit + " " + this.price + "tk";
     }
 
     public Price() {

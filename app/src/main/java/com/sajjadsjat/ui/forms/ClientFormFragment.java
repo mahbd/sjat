@@ -68,10 +68,22 @@ public class ClientFormFragment extends Fragment {
                 binding.clientName.setError("Name is required");
                 return;
             }
+            if (Client.validateNameFatherName(name, fathersName) != null) {
+                if (client != null && client.getName().equals(Client.formatName(name)) && client.getFathersName().equals(Client.formatName(fathersName))) {
+                    binding.clientName.setError(null);
+                } else {
+                    binding.clientName.setError(Client.validateNameFatherName(name, fathersName));
+                    return;
+                }
+            }
             binding.clientName.setError(null);
             if (Client.validatePhone(phone) != null) {
-                binding.clientPhone.setError(Client.validatePhone(phone));
-                return;
+                if (client != null && client.getPhone().equals(phone)) {
+                    binding.clientPhone.setError(null);
+                } else {
+                    binding.clientPhone.setError(Client.validatePhone(phone));
+                    return;
+                }
             }
             binding.clientPhone.setError(null);
             if (address.isEmpty()) {

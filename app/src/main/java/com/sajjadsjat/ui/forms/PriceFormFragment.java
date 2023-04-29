@@ -105,16 +105,17 @@ public class PriceFormFragment extends Fragment {
                 binding.etUnit.setError("Unit is required");
                 return;
             }
+            if (Price.doesExist(itemName, unit) && price == null || (Price.doesExist(itemName, unit) && price != null && price.getPrice() == unitPrice)) {
+                binding.etPrice.setError("Price already exists");
+                Toast.makeText(requireContext(), "Price already exists", Toast.LENGTH_SHORT).show();
+                return;
+            }
             binding.etPrice.setError(null);
             if (unitPrice == 0) {
                 binding.etPrice.setError("Union is required");
                 return;
             }
             binding.etPrice.setError(null);
-            if (Price.doesExist(itemName, unit) && price == null) {
-                Toast.makeText(requireContext(), "Price already exists", Toast.LENGTH_SHORT).show();
-                return;
-            }
             if (price == null) {
                 Price newPrice = new Price(itemName, unitPrice, unit);
                 Toast.makeText(requireContext(), "Price Saved", Toast.LENGTH_SHORT).show();
