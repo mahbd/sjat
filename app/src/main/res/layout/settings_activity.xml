@@ -59,4 +59,24 @@
             app:layout_constraintTop_toTopOf="parent" />
     </LinearLayout>
 
+    <EditText
+        android:id="@+id/et_home_query_limit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:hint="Home query limit"
+        android:inputType="number"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout2" />
+
+    <EditText
+        android:id="@+id/et_client_query_limit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autofillHints=""
+        android:hint="Client query limit"
+        android:inputType="number"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_home_query_limit"  />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

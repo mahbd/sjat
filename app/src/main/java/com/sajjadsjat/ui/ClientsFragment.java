@@ -48,7 +48,7 @@ public class ClientsFragment extends Fragment {
         binding = FragmentClientsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         prefs = requireContext().getSharedPreferences("my_prefs", Context.MODE_PRIVATE);
-        int searchNameQueryLimit = prefs.getInt("search_name_query_limit", 10);
+        int searchNameQueryLimit = prefs.getInt("client_query_limit", 10);
 
         RealmResults<Client> clients = Realm.getDefaultInstance().where(Client.class).limit(searchNameQueryLimit).sort("due", Sort.DESCENDING).findAll();
         ClientsAdapter adapter = new ClientsAdapter(requireContext(), R.layout.client_item, searchNameQueryLimit, clients);
