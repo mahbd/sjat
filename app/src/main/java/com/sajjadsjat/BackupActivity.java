@@ -1,6 +1,7 @@
 package com.sajjadsjat;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import com.sajjadsjat.databinding.ActivityBackupBinding;
 import com.sajjadsjat.utils.Generator;
@@ -26,12 +28,14 @@ import io.realm.Realm;
 
 public class BackupActivity extends AppCompatActivity {
     private static final int PICKFILE_REQUEST_CODE = 99;
+    SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ActivityBackupBinding binding = ActivityBackupBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         binding.btnBackup.setOnClickListener(v -> backup());
         binding.btnRestore.setOnClickListener(v -> restore());
@@ -125,6 +129,8 @@ public class BackupActivity extends AppCompatActivity {
                 outputStream.close();
                 inputStream.close();
                 Toast.makeText(this, "Successful " + documentDir.getPath(), Toast.LENGTH_SHORT).show();
+                String backupMail = prefs.getString("backup_mail", "mahmudula2000@gmail.com");
+                H.sendEmail(this, backupMail, "Backup", "", backupFile);
                 onBackPressed();
             } catch (IOException e) {
                 e.printStackTrace();

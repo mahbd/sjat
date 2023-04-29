@@ -9,11 +9,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 
 import com.sajjadsjat.R;
 import com.sajjadsjat.model.Client;
 import com.sajjadsjat.model.Record;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.concurrent.Executor;
@@ -92,7 +94,7 @@ public class H {
     }
 
     public static void sendEmail(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences("my_prefs", Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String emailUsername = prefs.getString("email_username", "");
         String emailPassword = prefs.getString("email_password", "");
         if (emailUsername.isEmpty() || emailPassword.isEmpty()) {
@@ -100,13 +102,33 @@ public class H {
             return;
         }
 
-        new EmailSender(emailUsername, emailPassword).sendEmail("mahmudula2000@gmail.com", "Test", "Test");
+        runBackground(() -> {
+            new EmailSender(emailUsername, emailPassword).sendEmail("mahmudula2000@gmail.com", "Test", "Test");
+        });
+    }
+
+    public static void sendEmail(Context context, String to, String subject, String message, File file) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        String emailUsername = prefs.getString("email_username", "");
+        String emailPassword = prefs.getString("email_password", "");
+        if (emailUsername.isEmpty() || emailPassword.isEmpty()) {
+            Toast.makeText(context, "Please set email username and password in settings", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        runBackground(() -> {
+            new EmailSender(emailUsername, emailPassword).sendEmail(to, subject, message, file);
+        });
     }
 
     public static interface AlertCallback {
         public void onOk();
 
         public void onCancel();
+    }
+
+    public static interface SimpleAlertCallback {
+        public void onOk();
     }
 
     public static void showAlert(Context context, String title, String message, AlertCallback callback) {
@@ -118,6 +140,16 @@ public class H {
         });
         builder.setNegativeButton("Cancel", (dialog, which) -> {
             callback.onCancel();
+        });
+        builder.show();
+    }
+
+    public static void showAlert(Context context, String title, String message, SimpleAlertCallback callback) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton("Ok", (dialog, which) -> {
+            callback.onOk();
         });
         builder.show();
     }

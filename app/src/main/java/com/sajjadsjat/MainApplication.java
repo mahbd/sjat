@@ -1,6 +1,9 @@
 package com.sajjadsjat;
 
 import android.app.Application;
+import android.content.SharedPreferences;
+
+import androidx.preference.PreferenceManager;
 
 import io.realm.Realm;
 import io.realm.RealmConfiguration;

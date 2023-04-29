@@ -98,6 +98,11 @@ public class Price extends RealmObject {
         return Realm.getDefaultInstance().where(Price.class).equalTo("item", item).equalTo("unit", unit).findFirst() != null;
     }
 
+    public static boolean hasItem(String item) {
+        if (item == null || item.isEmpty()) return false;
+        return Realm.getDefaultInstance().where(Price.class).equalTo("item", item).findFirst() != null;
+    }
+
     public static Price get(long id) {
         return Realm.getDefaultInstance().where(Price.class).equalTo("id", id).findFirst();
     }

@@ -1,17 +1,14 @@
 package com.sajjadsjat.ui.forms;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -71,8 +68,7 @@ public class RecordFormFragment extends Fragment {
         if (items.size() > 1) {
             items.add(1, H.ITEM_DEPOSIT);
             items.add(2, H.ITEM_PREVIOUS);
-        }
-        else {
+        } else {
             items.add(H.ITEM_DEPOSIT);
             items.add(H.ITEM_PREVIOUS);
         }
@@ -86,11 +82,37 @@ public class RecordFormFragment extends Fragment {
             employees.add(employee.getName());
         }
 
-        ArrayAdapter<String> itemAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, items);
-        binding.recordItemDropdown.setAdapter(itemAdapter);
-
         ArrayAdapter<String> unitAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, units);
         binding.recordUnitDropdown.setAdapter(unitAdapter);
+
+        new SimpleSearchableDropdown(requireContext(), binding.recordItemDropdown, s -> {
+            String item = binding.recordItemDropdown.getText().toString().trim();
+            if (item.equals(H.ITEM_DEPOSIT) || item.equals(H.ITEM_PREVIOUS)) {
+                binding.recordQuantity.setVisibility(View.GONE);
+                binding.recordUnitDropdown.setVisibility(View.GONE);
+                binding.recordDiscount.setVisibility(View.GONE);
+                binding.recordPrice.setHint("Amount");
+            } else {
+                binding.recordQuantity.setVisibility(View.VISIBLE);
+                binding.recordUnitDropdown.setVisibility(View.VISIBLE);
+                binding.recordPrice.setHint("Price");
+            }
+            double price = calculatePrice();
+            if (price != 0) {
+                binding.recordPrice.setText(String.format(Locale.getDefault(), "%.2f", price));
+                binding.recordDiscount.setVisibility(View.GONE);
+            }
+            RealmResults<Price> uui = realm.where(Price.class).equalTo("item", binding.recordItemDropdown.getText().toString()).distinct("unit").findAll();
+            List<String> newUnits = new ArrayList<>();
+            if (uui.size() > 0) {
+                for (Price p : uui) {
+                    newUnits.add(p.getUnit());
+                }
+                unitAdapter.clear();
+                unitAdapter.addAll(newUnits);
+            }
+            return null;
+        }).showDropdown(items);
 
         ArrayAdapter<String> sellerAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_dropdown_item, employees);
         binding.recordSellerDropdown.setAdapter(sellerAdapter);
@@ -124,59 +146,13 @@ public class RecordFormFragment extends Fragment {
             timePickerDialog.show();
         });
 
-        binding.recordItemDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String item = binding.recordItemDropdown.getSelectedItem().toString();
-                if (item.equals(H.ITEM_DEPOSIT) || item.equals(H.ITEM_PREVIOUS)) {
-                    binding.recordQuantity.setVisibility(View.GONE);
-                    binding.recordUnitDropdown.setVisibility(View.GONE);
-                    binding.recordDiscount.setVisibility(View.GONE);
-                    binding.recordPrice.setHint("Amount");
-                } else {
-                    binding.recordQuantity.setVisibility(View.VISIBLE);
-                    binding.recordUnitDropdown.setVisibility(View.VISIBLE);
-                    binding.recordPrice.setHint("Price");
-                }
-                double price = calculatePrice();
-                if (price != 0) {
-                    binding.recordPrice.setText(String.format(Locale.getDefault(), "%.2f", price));
-                    binding.recordDiscount.setVisibility(View.GONE);
-                }
-                RealmResults<Price> uui = realm.where(Price.class).equalTo("item", binding.recordItemDropdown.getSelectedItem().toString()).distinct("unit").findAll();
-                List<String> units = new ArrayList<>();
-                if (uui.size() > 0) {
-                    for (Price p : uui) {
-                        units.add(p.getUnit());
-                    }
-                    unitAdapter.clear();
-                    unitAdapter.addAll(units);
-                }
+        binding.recordQuantity.addTextChangedListener(H.createAfterTextChanged(s -> {
+            double price = calculatePrice();
+            if (price != 0) {
+                binding.recordPrice.setText(String.format(Locale.getDefault(), "%.2f", price));
+                binding.recordDiscount.setVisibility(View.GONE);
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        binding.recordQuantity.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                double price = calculatePrice();
-                if (price != 0) {
-                    binding.recordPrice.setText(String.format(Locale.getDefault(), "%.2f", price));
-                    binding.recordDiscount.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
+        }));
 
         binding.recordUnitDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -193,14 +169,9 @@ public class RecordFormFragment extends Fragment {
             }
         });
 
-        binding.recordPrice.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String item = binding.recordItemDropdown.getSelectedItem().toString();
+        binding.recordPrice.addTextChangedListener(H.createAfterTextChanged(s -> {
+            String item = binding.recordItemDropdown.getText().toString();
+            if (Price.hasItem(item)) {
                 double enteredPrice = H.stringToDouble(binding.recordPrice.getText().toString());
                 double price = calculatePrice();
                 if (price != enteredPrice && !item.equals(H.ITEM_DEPOSIT) && !item.equals(H.ITEM_PREVIOUS)) {
@@ -210,15 +181,11 @@ public class RecordFormFragment extends Fragment {
                     binding.recordDiscount.setVisibility(View.GONE);
                 }
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
+        }));
 
         binding.recordSave.setOnClickListener(v -> {
             String name = binding.recordNameDropdown.getText().toString();
-            String item = binding.recordItemDropdown.getSelectedItem().toString();
+            String item = binding.recordItemDropdown.getText().toString();
             double quantity = H.stringToDouble(binding.recordQuantity.getText().toString());
             String unit = binding.recordUnitDropdown.getSelectedItem().toString();
             double price = H.stringToDouble(binding.recordPrice.getText().toString());
@@ -226,18 +193,8 @@ public class RecordFormFragment extends Fragment {
             long timestamp2 = H.stringToNumber(binding.recordTimestamp2.getText().toString());
             long createdAt = timestamp1 + timestamp2;
             if (binding.recordSellerDropdown.getSelectedItem() == null) {
-                H.showAlert(requireContext(), "Seller is required", "Please create a employee first", new H.AlertCallback() {
-                    @Override
-                    public void onOk() {
-
-                    }
-
-                    @Override
-                    public void onCancel() {
-
-                    }
+                H.showAlert(requireContext(), "Seller is required", "Please create a employee first", () -> {
                 });
-                return;
             }
             String seller = binding.recordSellerDropdown.getSelectedItem().toString();
 
@@ -246,6 +203,11 @@ public class RecordFormFragment extends Fragment {
                 return;
             }
             binding.recordNameDropdown.setError(null);
+            if (Price.hasItem(item)) {
+                binding.recordItemDropdown.setError("Select a valid item");
+                return;
+            }
+            binding.recordItemDropdown.setError(null);
             if (!item.equals(H.ITEM_DEPOSIT) && quantity == 0 && !item.equals(H.ITEM_PREVIOUS)) {
                 binding.recordQuantity.setError("Quantity is required");
                 return;
@@ -294,30 +256,13 @@ public class RecordFormFragment extends Fragment {
         if (item.equals(H.ITEM_DEPOSIT)) {
             message = String.format(Locale.getDefault(), "Send message to %s for payment of %.0f", name, record.getTotal());
         } else {
-            message = String.format(Locale.getDefault(), "Send message to %s for buying %f %s with price %.0f", name, record.getQuantity(), record.getUnit(), record.getTotal());
+            message = String.format(Locale.getDefault(), "Send message to %s for buying %.2f %s with price %.2f", name, record.getQuantity(), record.getUnit(), record.getTotal());
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Send message");
-        builder.setMessage(message);
-        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                H.sendMessage(requireContext(), record.getClient());
-                dialog.dismiss();
-            }
-        });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        H.showAlert(requireContext(), "Send message", message, () -> H.sendMessage(requireContext(), record.getClient()));
     }
 
     private double calculatePrice() {
-        String item = binding.recordItemDropdown.getSelectedItem().toString();
+        String item = binding.recordItemDropdown.getText().toString();
         double quantity = H.stringToDouble(binding.recordQuantity.getText().toString());
         String unit = binding.recordUnitDropdown.getSelectedItem().toString();
         Price priceObj = realm.where(Price.class).equalTo("item", item).equalTo("unit", unit).findFirst();

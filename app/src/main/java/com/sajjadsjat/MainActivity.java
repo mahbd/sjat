@@ -1,25 +1,40 @@
 package com.sajjadsjat;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.android.material.navigation.NavigationView;
-import com.sajjadsjat.databinding.ActivityMainBinding;
-import com.sajjadsjat.utils.H;
-
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
+
+import com.google.android.material.navigation.NavigationView;
+import com.sajjadsjat.databinding.ActivityMainBinding;
+import com.sajjadsjat.utils.H;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.time.LocalDateTime;
+
+import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity {
+    SharedPreferences prefs;
 
     private AppBarConfiguration mAppBarConfiguration;
 
@@ -29,11 +44,22 @@ public class MainActivity extends AppCompatActivity {
 
         ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        Button sendEmail = findViewById(R.id.btn_send_mail);
-//        sendEmail.setOnClickListener(v -> {
-//            H.sendEmail(this);
-//        });
+        Button backupButton = binding.navView.getHeaderView(0).findViewById(R.id.btn_send_mail);
+        backupButton.setOnClickListener(v -> {
+            backupButton.setEnabled(false);
+            backup();
+        });
+
+        if (prefs.getLong("last_backup", 0) + 60 * 60 * 24 < H.datetimeToTimestamp(LocalDateTime.now())) {
+            binding.navView.getHeaderView(0).setBackground(AppCompatResources.getDrawable(this, R.drawable.red_side_nav_bar));
+            backupButton.setEnabled(true);
+        }
+
+        if (prefs.getLong("last_backup", 0) + 60 * 10 > H.datetimeToTimestamp(LocalDateTime.now())) {
+            backupButton.setEnabled(false);
+        }
 
         setSupportActionBar(binding.appBarMain.toolbar);
         DrawerLayout drawer = binding.drawerLayout;
@@ -80,5 +106,47 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
         return true;
+    }
+
+    private void backup() {
+        if (!Environment.isExternalStorageManager()) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+            intent.setData(Uri.parse("package:" + getPackageName()));
+            startActivity(intent);
+        } else {
+            Realm realm = Realm.getDefaultInstance();
+            File realmFile = new File(realm.getPath());
+
+            File documentDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+            documentDir = new File(documentDir, "sjat");
+
+            if (!documentDir.exists()) {
+                documentDir.mkdirs();
+            }
+            int day = LocalDateTime.now().getDayOfMonth();
+            int month = LocalDateTime.now().getMonthValue();
+            String backupFileName = "sjat-" + day + "-" + month + ".realm";
+            File backupFile = new File(documentDir, backupFileName);
+
+            try {
+                FileInputStream inputStream = new FileInputStream(realmFile);
+                FileOutputStream outputStream = new FileOutputStream(backupFile);
+                byte[] buf = new byte[1024];
+                int len;
+                while ((len = inputStream.read(buf)) > 0) {
+                    outputStream.write(buf, 0, len);
+                }
+                outputStream.close();
+                inputStream.close();
+                Toast.makeText(this, "Successful " + documentDir.getPath(), Toast.LENGTH_SHORT).show();
+                String backupMail = prefs.getString("backup_mail", "mahmudula2000@gmail.com");
+                H.sendEmail(this, backupMail, "Backup", "", backupFile);
+                long lastBackup = H.datetimeToTimestamp(LocalDateTime.now());
+                prefs.edit().putLong("last_backup", lastBackup).apply();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Failed to backup files", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
