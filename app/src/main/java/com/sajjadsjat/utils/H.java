@@ -57,34 +57,46 @@ public class H {
             e.printStackTrace();
         }
         String phoneNumber = client.getPhone();
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime today = LocalDateTime.of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 0, 0);
+        long timestamp = datetimeToTimestamp(today);
         StringBuilder lastFewTransaction = new StringBuilder();
-        RealmResults<Record> records = Realm.getDefaultInstance().where(Record.class).equalTo("client.id", client.getId()).sort("createdAt", Sort.DESCENDING).limit(3).findAll();
+        RealmResults<Record> records = Realm.getDefaultInstance().where(Record.class).equalTo("client.id", client.getId()).sort("createdAt", Sort.DESCENDING).greaterThan("createdAt", timestamp).findAll();
+
+        double todayTotal = 0;
         if (records.size() > 0) {
-            lastFewTransaction = new StringBuilder("Last 3 transactions:\n");
             for (Record record : records) {
-                if (record.getItem().equals(ITEM_DEPOSIT)) {
-                    lastFewTransaction.append(record.getDateTimeShort()).append(" deposit ").append(record.getDiscount()).append("tk\n");
-                } else if (record.getItem().equals(ITEM_DISCOUNT)) {
-                    lastFewTransaction.append(record.getDateTimeShort()).append(" all due PAID\n");
-                } else if (record.getItem().equals(ITEM_PREVIOUS)) {
-                    lastFewTransaction.append("Previous due ").append(record.getTotal()).append("tk\n");
-                } else {
-                    lastFewTransaction.append(record.getDateTimeShort()).append(" ").append(record.getQuantity()).append(" ").append(record.getUnit()).append(" ").append(record.getItem()).append(" ").append(record.getTotal()).append("tk\n");
+                todayTotal += record.getTotal();
+            }
+            lastFewTransaction = new StringBuilder("আজকের হিসাবঃ");
+            for (Record record : records) {
+                switch (record.getItem()) {
+                    case ITEM_DEPOSIT:
+                        lastFewTransaction.append(" জমা ").append(record.getDiscount()).append("tk\n");
+                        break;
+                    case ITEM_DISCOUNT:
+                        lastFewTransaction.append(" পরিশোধিত ");
+                        break;
+                    case ITEM_PREVIOUS:
+                        lastFewTransaction.append(" আগের জের ").append(record.getTotal()).append("tk\n");
+                        break;
+                    default:
+                        lastFewTransaction.append(" ").append(record.getQuantity()).append(record.getUnit()).append(" ").append(record.getItem()).append(" ").append(record.getTotal()).append("tk\n");
+                        break;
                 }
             }
         }
-        String message = "Dear " + client.getName() + ",\n" +
-                lastFewTransaction +
-                "Your current due is " + client.getDue() + "tk.\n" +
+        if (Math.abs(client.getDue() - todayTotal) > 10) {
+            lastFewTransaction.append("পুর্বের হিসাবঃ ").append(client.getDue() + todayTotal).append("tk\n");
+        }
+        String message = lastFewTransaction +
+                "বর্তমান" + (client.getDue() < 0 ? " জের " + client.getDue() : " অতিরিক্ত জমা " + -client.getDue()) + client.getDue() + "tk.\n" +
                 "-\nIbrahim Khalil";
         if (isPaid) {
             message = "Dear " + client.getName() + ",\n" +
                     "I am happy to inform you that all dues have been paid. Thank you for your cooperation.\n" +
                     "Best regards,\n" +
                     "Ibrahim Khalil";
-        }
-        if (message.length() > 160) {
-            message = message.substring(0, 160);
         }
         new SMSHandler().sendSMS(context, phoneNumber, message);
     }

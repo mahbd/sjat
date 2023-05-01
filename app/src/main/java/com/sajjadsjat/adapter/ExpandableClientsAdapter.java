@@ -54,7 +54,7 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
     @Override
     public Record getChild(int groupPosition, int childPosition) {
         Client group = clients.get(groupPosition);
-        return realm.where(Record.class).equalTo("client.id", group.getId()).findAll().get(childPosition);
+        return realm.where(Record.class).equalTo("client.id", group.getId()).sort("createdAt", Sort.DESCENDING).findAll().get(childPosition);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class ExpandableClientsAdapter extends BaseExpandableListAdapter {
         Record record = getChild(groupPosition, childPosition);
 
         if (record != null && record.getItem().equals(H.ITEM_DEPOSIT)) {
-            childTextView.setText(String.format(Locale.getDefault(), "%s     %.0fTk", record.getDateTimeShort(), record.getDiscount()));
+            childTextView.setText(String.format(Locale.getDefault(), "%s payment %.0fTk", record.getDateTimeShort(), record.getDiscount()));
             TextView recordFullTime = convertView.findViewById(R.id.record_detail_full_date);
             recordFullTime.setText(record.getDateTime());
             TextView recordDetailQuantity = convertView.findViewById(R.id.record_detail_quantity);

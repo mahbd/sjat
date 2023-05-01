@@ -9,6 +9,9 @@ import android.content.IntentFilter;
 import android.telephony.SmsManager;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SMSHandler {
     private static final String SMS_SENT = "SMS_SENT";
     private static final String SMS_DELIVERED = "SMS_DELIVERED";
@@ -26,7 +29,6 @@ public class SMSHandler {
             public void onReceive(Context context, Intent intent) {
                 switch (getResultCode()) {
                     case Activity.RESULT_OK:
-                        Toast.makeText(context, "SMS sent", Toast.LENGTH_SHORT).show();
                         break;
                     case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
                         Toast.makeText(context, "Generic failure", Toast.LENGTH_SHORT).show();
@@ -50,7 +52,6 @@ public class SMSHandler {
             public void onReceive(Context context, Intent intent) {
                 switch (getResultCode()) {
                     case Activity.RESULT_OK:
-                        Toast.makeText(context, "SMS delivered", Toast.LENGTH_SHORT).show();
                         break;
                     case Activity.RESULT_CANCELED:
                         Toast.makeText(context, "SMS not delivered", Toast.LENGTH_SHORT).show();
@@ -64,7 +65,13 @@ public class SMSHandler {
         context.registerReceiver(deliveredReceiver, new IntentFilter(SMS_DELIVERED));
 
         // Send the SMS message
-        smsManager.sendTextMessage(phoneNumber, null, message, sentIntent, deliveredIntent);
+        ArrayList<String> messages = smsManager.divideMessage(message);
+        ArrayList<PendingIntent> sentIntents = new ArrayList<>(), deliveredIntents = new ArrayList<>();
+        for (int i = 0; i < messages.size(); i++) {
+            sentIntents.add(sentIntent);
+            deliveredIntents.add(deliveredIntent);
+        }
+        smsManager.sendMultipartTextMessage(phoneNumber, null, messages, sentIntents, deliveredIntents);
     }
 
 }

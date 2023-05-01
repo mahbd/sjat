@@ -22,8 +22,12 @@ public class SettingsActivity extends AppCompatActivity {
         binding.etEmailUsername.setText(prefs.getString("email_username", ""));
         binding.etEmailPassword.setText(prefs.getString("email_password", ""));
 
-        binding.etEmailPassword.addTextChangedListener(H.createAfterTextChanged(s -> {
+        binding.etEmailUsername.addTextChangedListener(H.createAfterTextChanged(s -> {
             prefs.edit().putString("email_username", s.toString()).apply();
+        }));
+
+        binding.etEmailPassword.addTextChangedListener(H.createAfterTextChanged(s -> {
+            prefs.edit().putString("email_password", s.toString()).apply();
         }));
 
         binding.etHomeQueryLimit.addTextChangedListener(H.createAfterTextChanged(s -> {

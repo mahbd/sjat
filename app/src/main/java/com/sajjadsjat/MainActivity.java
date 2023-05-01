@@ -141,8 +141,8 @@ public class MainActivity extends AppCompatActivity {
                 outputStream.close();
                 inputStream.close();
                 Toast.makeText(this, "Successful " + documentDir.getPath(), Toast.LENGTH_SHORT).show();
-                String backupMail = prefs.getString("backup_mail", "mahmudula2000@gmail.com");
-                H.sendEmail(this, backupMail, "Backup", "", backupFile);
+//                String backupMail = prefs.getString("backup_mail", "mahmudula2000@gmail.com");
+//                H.sendEmail(this, backupMail, "Backup", "", backupFile);
                 long lastBackup = H.datetimeToTimestamp(LocalDateTime.now());
                 prefs.edit().putLong("last_backup", lastBackup).apply();
             } catch (IOException e) {
