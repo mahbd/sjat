@@ -68,7 +68,7 @@ public class H {
             for (Record record : records) {
                 todayTotal += record.getTotal();
             }
-            lastFewTransaction = new StringBuilder("আজকের হিসাবঃ");
+            lastFewTransaction = new StringBuilder("আজকের হিসাবঃ\n");
             for (Record record : records) {
                 switch (record.getItem()) {
                     case ITEM_DEPOSIT:
@@ -87,7 +87,7 @@ public class H {
             }
         }
         if (Math.abs(client.getDue() - todayTotal) > 10) {
-            lastFewTransaction.append("পুর্বের হিসাবঃ ").append(client.getDue() + todayTotal).append("tk\n");
+            lastFewTransaction.append("পুর্বের হিসাবঃ ").append(client.getDue() - todayTotal).append("tk\n");
         }
         String message = lastFewTransaction +
                 "বর্তমান" + (client.getDue() < 0 ? " অতিরিক্ত জমা " + -client.getDue(): " জের " + client.getDue()) + "tk.\n" +
