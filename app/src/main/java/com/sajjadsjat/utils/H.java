@@ -90,7 +90,7 @@ public class H {
             lastFewTransaction.append("পুর্বের হিসাবঃ ").append(client.getDue() + todayTotal).append("tk\n");
         }
         String message = lastFewTransaction +
-                "বর্তমান" + (client.getDue() < 0 ? " জের " + client.getDue() : " অতিরিক্ত জমা " + -client.getDue()) + client.getDue() + "tk.\n" +
+                "বর্তমান" + (client.getDue() < 0 ? " অতিরিক্ত জমা " + -client.getDue(): " জের " + client.getDue()) + "tk.\n" +
                 "-\nIbrahim Khalil";
         if (isPaid) {
             message = "Dear " + client.getName() + ",\n" +

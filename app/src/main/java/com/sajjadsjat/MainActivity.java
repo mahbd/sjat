@@ -1,7 +1,11 @@
 package com.sajjadsjat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -111,44 +115,56 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void backup() {
-        if (!Environment.isExternalStorageManager()) {
-            Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-            intent.setData(Uri.parse("package:" + getPackageName()));
-            startActivity(intent);
-        } else {
-            Realm realm = Realm.getDefaultInstance();
-            File realmFile = new File(realm.getPath());
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        Network network = connectivityManager.getActiveNetwork();
+        if (network != null) {
+            NetworkCapabilities networkCapabilities = connectivityManager.getNetworkCapabilities(network);
+            if (networkCapabilities != null && networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)) {
 
-            File documentDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-            documentDir = new File(documentDir, "sjat");
+                if (!Environment.isExternalStorageManager()) {
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                    intent.setData(Uri.parse("package:" + getPackageName()));
+                    startActivity(intent);
+                } else {
+                    Realm realm = Realm.getDefaultInstance();
+                    File realmFile = new File(realm.getPath());
 
-            if (!documentDir.exists()) {
-                documentDir.mkdirs();
-            }
-            int day = LocalDateTime.now().getDayOfMonth();
-            int month = LocalDateTime.now().getMonthValue();
-            String backupFileName = "sjat-" + day + "-" + month + ".realm";
-            File backupFile = new File(documentDir, backupFileName);
+                    File documentDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+                    documentDir = new File(documentDir, "sjat");
 
-            try {
-                FileInputStream inputStream = new FileInputStream(realmFile);
-                FileOutputStream outputStream = new FileOutputStream(backupFile);
-                byte[] buf = new byte[1024];
-                int len;
-                while ((len = inputStream.read(buf)) > 0) {
-                    outputStream.write(buf, 0, len);
+                    if (!documentDir.exists()) {
+                        documentDir.mkdirs();
+                    }
+                    int day = LocalDateTime.now().getDayOfMonth();
+                    int month = LocalDateTime.now().getMonthValue();
+                    String backupFileName = "sjat-" + day + "-" + month + ".realm";
+                    File backupFile = new File(documentDir, backupFileName);
+
+                    try {
+                        FileInputStream inputStream = new FileInputStream(realmFile);
+                        FileOutputStream outputStream = new FileOutputStream(backupFile);
+                        byte[] buf = new byte[1024];
+                        int len;
+                        while ((len = inputStream.read(buf)) > 0) {
+                            outputStream.write(buf, 0, len);
+                        }
+                        outputStream.close();
+                        inputStream.close();
+                        Toast.makeText(this, "Successful " + documentDir.getPath(), Toast.LENGTH_SHORT).show();
+                        String backupMail = prefs.getString("backup_mail", "mahmudula2000@gmail.com");
+                        H.sendEmail(this, backupMail, "Backup", "", backupFile);
+                        long lastBackup = H.datetimeToTimestamp(LocalDateTime.now());
+                        prefs.edit().putLong("last_backup", lastBackup).apply();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Failed to backup files", Toast.LENGTH_SHORT).show();
+                    }
                 }
-                outputStream.close();
-                inputStream.close();
-                Toast.makeText(this, "Successful " + documentDir.getPath(), Toast.LENGTH_SHORT).show();
-//                String backupMail = prefs.getString("backup_mail", "mahmudula2000@gmail.com");
-//                H.sendEmail(this, backupMail, "Backup", "", backupFile);
-                long lastBackup = H.datetimeToTimestamp(LocalDateTime.now());
-                prefs.edit().putLong("last_backup", lastBackup).apply();
-            } catch (IOException e) {
-                e.printStackTrace();
-                Toast.makeText(this, "Failed to backup files", Toast.LENGTH_SHORT).show();
+            } else {
+                H.showAlert(this, "No internet connection", "Please connect to internet and try again", () -> {});
             }
+        } else {
+            H.showAlert(this, "No internet connection", "Please connect to internet and try again", () -> {});
         }
     }
 }
