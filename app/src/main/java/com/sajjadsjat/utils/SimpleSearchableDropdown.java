@@ -64,13 +64,4 @@ public class SimpleSearchableDropdown {
         adapter = new CustomArrayAdapter(context, layout, optionList);
         dropdownList.setAdapter(adapter);
     }
-
-    public List<String> doFilter(String constraint) {
-        if (constraint == null) constraint = "";
-        constraint = constraint.toLowerCase().trim();
-        if (constraint.length() == 0) return optionList;
-        String finalConstraint = constraint;
-        Stream<String> filtered = optionList.stream().filter(item -> item.toLowerCase().contains(finalConstraint));
-        return Arrays.asList(filtered.toArray(String[]::new));
-    }
 }

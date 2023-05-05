@@ -1,12 +1,10 @@
 package com.sajjadsjat.utils;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-public class Match {
-    public static List<MatchResult> getMatchResults(String input, List<String> targets) {
+public class ScoreMatch {
+    public static List<String> filter(String input, List<String> targets) {
         List<MatchResult> matchResults = new ArrayList<>();
 
         for (String target : targets) {
@@ -15,8 +13,12 @@ public class Match {
         }
 
         matchResults.sort((o1, o2) -> Double.compare(o2.score, o1.score));
+        List<String> results = new ArrayList<>();
+        for (MatchResult matchResult : matchResults) {
+            results.add(matchResult.target);
+        }
 
-        return matchResults;
+        return results;
     }
 
     public static double getMatchScore(String target, String input) {

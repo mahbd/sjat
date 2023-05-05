@@ -10,6 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Filter;
 
+import com.sajjadsjat.utils.ScoreMatch;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,17 +32,13 @@ public class CustomArrayAdapter extends ArrayAdapter<String> {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults results = new FilterResults();
-                List<String> filteredList = new ArrayList<>();
+                List<String> filteredList;
 
                 if (constraint == null || constraint.length() == 0) {
-                    filteredList.addAll(originalItems);
+                    filteredList = originalItems;
                 } else {
                     String filterPattern = constraint.toString().toLowerCase().trim();
-                    for (String item : originalItems) {
-                        if (item.toLowerCase().contains(filterPattern)) {
-                            filteredList.add(item);
-                        }
-                    }
+                    filteredList = ScoreMatch.filter(filterPattern, originalItems);
                 }
 
                 results.values = filteredList;
@@ -58,7 +56,7 @@ public class CustomArrayAdapter extends ArrayAdapter<String> {
 
     @Override
     public int getCount() {
-        return filteredItems.size();
+        return Math.min(filteredItems.size(), 8);
     }
 
     @Override
