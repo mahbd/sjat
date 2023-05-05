@@ -8,7 +8,17 @@ public class ScoreMatch {
         List<MatchResult> matchResults = new ArrayList<>();
 
         for (String target : targets) {
-            double score = getMatchScore(target, input);
+            String temTarget = target.toLowerCase();
+            double score = getMatchScore(temTarget, input);
+            if (temTarget.contains(input)) {
+                score += 1;
+                for (int i = 0; i < temTarget.length(); i++) {
+                    if (input.charAt(0) == temTarget.charAt(i)) {
+                        score += temTarget.length() - i;
+                        break;
+                    }
+                }
+            }
             matchResults.add(new MatchResult(target, score));
         }
 
@@ -31,7 +41,7 @@ public class ScoreMatch {
             return n;
         }
 
-        int[][] distance = new int[n + 1][m + 1];
+        double[][] distance = new double[n + 1][m + 1];
 
         for (int i = 0; i <= n; i++) {
             distance[i][0] = i;
@@ -43,14 +53,17 @@ public class ScoreMatch {
 
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= m; j++) {
-                int cost = (input.charAt(j - 1) == target.charAt(i - 1)) ? 0 : 1;
-                distance[i][j] = Math.min(Math.min(distance[i - 1][j] + 1, distance[i][j - 1] + 1), distance[i - 1][j - 1] + cost);
+                if ((target.charAt(i - 1) == input.charAt(j - 1))) {
+                    distance[i][j] = distance[i - 1][j - 1];
+                    continue;
+                }
+                distance[i][j] = Math.max(distance[i - 1][j] + 1, distance[i][j - 1] + 1);
             }
         }
 
-        int maxDistance = Math.max(n, m);
+        double maxDistance = Math.max(n, m);
 
-        return 1.0 - ((double) distance[n][m] / (double) maxDistance);
+        return 1.0 - (distance[n][m] / maxDistance);
     }
 
     public static class MatchResult {

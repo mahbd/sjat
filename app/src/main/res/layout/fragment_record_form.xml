@@ -35,6 +35,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
+                android:hint="জমা/বিক্রি/আগের"
                 android:inputType="text"
                 android:textColor="@color/black"
                 android:textColorHint="@color/gray" />
@@ -46,7 +47,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:hint="Quantity"
+                android:hint="পরিমাণ"
                 android:inputType="numberDecimal"
                 android:textColor="@color/black"
                 android:textColorHint="@color/gray" />
@@ -73,7 +74,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
                 android:layout_weight="1"
-                android:hint="Price"
+                android:hint="দাম"
                 android:inputType="numberDecimal"
                 android:textColor="@color/black"
                 android:textColorHint="@color/gray" />
