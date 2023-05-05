@@ -72,6 +72,7 @@ public class SMSHandler {
             deliveredIntents.add(deliveredIntent);
         }
         smsManager.sendMultipartTextMessage(phoneNumber, null, messages, sentIntents, deliveredIntents);
+        Toast.makeText(context, "SMS sent", Toast.LENGTH_SHORT).show();
     }
 
 }
