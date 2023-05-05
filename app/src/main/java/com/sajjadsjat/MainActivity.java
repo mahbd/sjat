@@ -38,6 +38,7 @@ import java.time.LocalDateTime;
 import io.realm.Realm;
 
 public class MainActivity extends AppCompatActivity {
+    ActivityMainBinding binding;
     SharedPreferences prefs;
 
     private AppBarConfiguration mAppBarConfiguration;
@@ -46,13 +47,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         Button backupButton = binding.navView.getHeaderView(0).findViewById(R.id.btn_send_mail);
         backupButton.setOnClickListener(v -> {
-            backupButton.setEnabled(false);
             backup();
         });
 
@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
             backupButton.setEnabled(true);
         }
 
-        if (prefs.getLong("last_backup", 0) + 60 * 10 > H.datetimeToTimestamp(LocalDateTime.now())) {
+        if (prefs.getLong("last_backup", 0) + 20 > H.datetimeToTimestamp(LocalDateTime.now())) {
             backupButton.setEnabled(false);
         }
 
@@ -155,6 +155,8 @@ public class MainActivity extends AppCompatActivity {
                         H.sendEmail(this, backupMail, "Backup", "", backupFile);
                         long lastBackup = H.datetimeToTimestamp(LocalDateTime.now());
                         prefs.edit().putLong("last_backup", lastBackup).apply();
+                        Button backupButton = binding.navView.getHeaderView(0).findViewById(R.id.btn_send_mail);
+                        backupButton.setEnabled(false);
                     } catch (IOException e) {
                         e.printStackTrace();
                         Toast.makeText(this, "Failed to backup files", Toast.LENGTH_SHORT).show();
